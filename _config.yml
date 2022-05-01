@@ -59,6 +59,10 @@ dribbble_url:
 # Google Analytics Tracking ID goes here:
 google_analytics:
 
+<audio autoplay="autoplay" controls="controls" loop="loop" preload="auto"
+
+            src="assets/music/13. Tomorrow Never Came.mp3">
+</audio>
 # The following settings are NECESSARY for the Prologue theme to run:
 remote_theme: chrisbobbe/jekyll-theme-prologue
 collections: [sections]
