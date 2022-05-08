@@ -1,0 +1,1584 @@
+<!doctype html>
+<html>
+<head>
+<meta charset='UTF-8'><meta name='viewport' content='width=device-width initial-scale=1'>
+<title>数据结构与算法</title>
+</head>
+<body><h1 id='数据结构与算法'>数据结构与算法</h1>
+<h2 id='线性结构linear-structure'>线性结构Linear Structure</h2>
+<p><strong>线性结构是一种有序的数据项的集合，其中每个数据项都有唯一的前驱和后继</strong></p>
+<p>新的数据项加入到数据集中，只会加入到原有数据项之前和之后。具有这种性质的数据集被称为线性结构</p>
+<p><strong>线性结构总有两端，在不同的情况下，两端的称呼也不相同</strong></p>
+<p><strong>两端的称呼不是关键，不同线性结构的关键区别在于数据项增减的方式</strong></p>
+<p>有的结构只允许数据项从一端添加/移除，而有的结构则允许数据项从两端移除</p>
+<p><strong>栈Stack、队列Queue、双端队列Deque、列表List</strong></p>
+<p>它们的共同点在于数据项之间只存在先后的次序关系，都属于线性结构</p>
+<h3 id='栈stack'>栈Stack</h3>
+<p>栈是一种有次序的数据项集合，在栈中，数据项的加入和移除都仅发生在同一端</p>
+<p>能操作的一端被称为栈“顶top”，不能操作的一端被称为栈“底base”</p>
+<h4 id='数据特征-1'><strong>数据特征</strong></h4>
+<p>距离栈底越近的数据项，留在栈中的时间就越长</p>
+<p>LIFO：后进先出，Last in First out，进栈和出栈的次序正好相反</p>
+<p>能够简易的完成反转次序：如浏览器后退back按钮、word的undo按钮（撤销最近完成的操作）</p>
+<h4 id='栈stack的操作'>栈Stack的操作</h4>
+<p>抽象数据类型栈定义为如下操作</p>
+<pre><code class='language-python' lang='python'>Stack()   #创建一个空栈
+push(item)#将item加入栈顶，无返回值
+pop()     #将栈顶数据项移除并返回，栈被修改
+peek()    #&quot;窥视&quot;栈顶数据项，返回栈顶数据项但不移除
+isEmpty() #返回栈是否为空栈
+size()    #返回栈中有多少个数据项
+</code></pre>
+<h4 id='用python实现adt-stack'><strong>用python实现ADT Stack</strong></h4>
+<p>注意此处取了list的尾端为栈顶，以保证push和pop单个元素的操作为O(1)</p>
+<pre><code class='language-python' lang='python'>class Stack:
+    def __init__(self):self.items = []
+    def isEmpty(self):return self.items == []
+    def push(self,item):self.items.append(item)
+    def pop(self):return self.items.pop()
+    def peek(self):return self.items[-1]
+    def size(self):return len(self.items)
+    
+# from pythonds.basic.stack import Stack
+</code></pre>
+<h4 id='栈示例十进制转换为二进制'>栈示例：十进制转换为二进制</h4>
+<p><strong>十进制转化为二进制</strong></p>
+<pre><code class='language-python' lang='python'>from pythonds.basic.stack import Stack
+
+
+def divideBy2(decNumber):
+    remstack = Stack()
+
+    while decNumber &gt; 0:
+        rem = decNumber % 2
+        remstack.push(rem)
+        decNumber = decnumber // 2
+
+    binString = &#39;&#39;
+    while not remstack.isEmpty():
+        binString = binString + str(remstack.pop())
+
+    return binString
+
+
+print(divideBy2(42))
+</code></pre>
+<p><strong>十进制转换为十六以下任意进制</strong></p>
+<pre><code class='language-python' lang='python'>from pythonds.basic.stack import Stack
+
+
+def baseConverter(decNumber, base):
+    digits = &#39;0123456789ABCDEF&#39;
+
+    remstack = Stack()
+
+    while decNumber &gt; 0:
+        rem = decNumber % base
+        remstack.push(rem)
+        decNumber = decNumber // base
+
+    newString = &#39;&#39;
+    while not remstack.isEmpty():
+        newString = newString + digits[remstack.pop()]
+
+    return newString
+
+
+print(baseConverter(25, 2))
+print(baseConverter(25, 16))
+</code></pre>
+<h4 id='栈示例中缀转后缀算法'>栈示例：中缀转后缀算法</h4>
+<p>以中缀表达式<strong>A+B*C</strong>为例，其后缀表达式为<strong>ABC*+</strong></p>
+<p>操作数ABC没有改变顺序</p>
+<p>操作符的出现顺序在后缀表达式中反转了</p>
+<p>由于*的优先级比+高，所以后缀表达式中操作符的出现顺序与运算次序一致</p>
+<p><strong>在中缀表达式转换为后缀形式的处理过程中，操作符比操作数要晚输出</strong></p>
+<p>所以在扫描到对应的第二个操作数之前，需要把操作符先保存起来</p>
+<p><strong>而这些暂存的操作符，由于优先级的规则，还有可能要反转次序输出</strong></p>
+<p>这种反转特性，使得我们考虑用栈来保存暂时未处理的操作符</p>
+<p>再看看带括号的<strong>(A+B)*C</strong>，对应的后缀形式是<strong>AB+C*</strong></p>
+<p>括号使得其中的运算符优先级提升了，所以遇到左括号时，要标记下，其后出现的操作符优先级提升了，一旦扫描到对应的右括号，就可以马上输出这个操作符</p>
+<p><strong>总结算法：</strong></p>
+<p>在从左到右扫描逐个字符扫描中缀表达式的过程中，采用一个栈来暂存未处理的操作符</p>
+<p>这样，栈顶的操作符就是最近暂存进去的，当遇到一个新的操作符，就需要和栈顶的操作符比较下优先级，再行处理</p>
+<p><strong>约定：</strong></p>
+<p>opstack：暂存操作符</p>
+<p>postfixLIst：保存后缀表达式</p>
+<p>中缀表达式由空格隔开的一系列单词（token）组成</p>
+<p><strong>算法实现：</strong></p>
+<p>从左到右扫描中缀表达式单词列表</p>
+<p>如果单词是操作数，则直接添加到后缀表达式列表的末尾</p>
+<p>如果单词是左括号，则压入opstack栈顶</p>
+<p>如果单词是右括号，则反复弹出opstack栈顶操作符，加入到输出列表末尾，直到碰到左括号</p>
+<p>如果单词是操作符，则压入opstack栈顶（压入时要反复弹出栈顶操作符，直到栈顶的操作符优先级低于它）</p>
+<p>中缀表达式单词列表扫描结束后，把opstack栈中所有剩余操作符依次弹出，添加到输出列表末尾</p>
+<pre><code class='language-python' lang='python'>from pythonds.basic.stack import Stack
+
+
+def infixToPostfix(infixexpr):
+    prec = {}
+    prec[&#39;*&#39;] = 3
+    prec[&#39;/&#39;] = 3
+    prec[&#39;+&#39;] = 2
+    prec[&#39;-&#39;] = 2
+    prec[&#39;(&#39;] = 1
+    opStack = Stack()
+    postfixList = []
+    tokenList = infixexpr.split()
+
+    for token in tokenList:
+        if token in &#39;ABCDEFGHIJKLMNOPQRSTUVWXYZ&#39; or token in &#39;0123456789&#39;:
+            postfixList.append(token)
+        elif token == &#39;(&#39;:
+            opStack.push(token)
+        elif token == &#39;)&#39;:
+            topToken = opStack.pop()
+            while topToken != &#39;(&#39;:
+                postfixList.append(topToken)
+                topToken = opStack.pop()
+        else:
+            while (not opStack.isempty()) and \
+            (prec[opStack.peek()] &gt;= prec[token]):
+                postfixList.append(opStack.pop())
+            opStack.push(token)
+    while not opStack.isEmpty():
+        postfixList.append(opStack.pop())
+    return &#39; &#39;.join(postfixList)
+</code></pre>
+<h4 id='栈示例后缀表达式求值'>栈示例：后缀表达式求值</h4>
+<p>由于操作符在操作数后面，所以要暂存操作数，在碰到操作符的时候，再将暂存的两个操作数进行运算</p>
+<p>依然利用栈的特性：操作符只作用于离它最近的两个操作数</p>
+<p>（对于-/运算，要注意先弹出的是右操作数）</p>
+<pre><code class='language-python' lang='python'>from pythonds.basic.stack import Stack
+
+
+def postfixEval(postfixExpr):
+    operandStack = Stack()
+    tokenList = postfixExpr.split()
+
+    for token in tokenList:
+        if token in &#39;0123456789&#39;:
+            operandStack.push(int(token))
+        else:
+            operand2 = operandStack.pop()
+            operand1 = operandStack.pop()
+            result = doMath(token, operand1, operand2)
+            operandStack.push(result)
+    return operandStack.pop()
+
+
+def doMath(op, op1, op2):
+    if op == &#39;*&#39;:
+        return op1 * op2
+    elif op == &#39;/&#39;:
+        return op1 / op2
+    elif op == &#39;+&#39;:
+        return op1 + op2
+    elif op == &#39;-&#39;:
+        return op1 - op2
+</code></pre>
+<h3 id='队列queue'>队列Queue</h3>
+<p>队列是一种有次序的数据集合，其特征是：新数据项添加总发生在一端（尾端rear），现存数据项的移除总发生在另一端（首端front）</p>
+<h4 id='数据特征-2'>数据特征</h4>
+<p>FIFO：first in first out 先进先出</p>
+<p>是一个有次序的数据集合</p>
+<h4 id='队列queue的操作'>队列Queue的操作</h4>
+<pre><code class='language-python' lang='python'>enqueue() #在队尾加入数据项
+dequeue() #移除队首的数据项
+size()    #返回队列的长度
+isEmpty() #返回队列是否为空
+</code></pre>
+<h4 id='用python实现adt-queue'>用python实现ADT Queue</h4>
+<p>将List首端作为队列尾端，末端作为队列首端。则enqueue()复杂度为O(n)，dequeue()复杂度为O(1)</p>
+<p>若将List首端作为队列首端，末端作为队列尾端，则操作复杂度相反</p>
+<pre><code class='language-python' lang='python'>class Queue:
+    def __init__(self):self.items = []
+    def isEmpty(self):return self.items == []
+    def enqueue(self,item):self.items.insert(0,item)
+    def dequeue(self):return self.items.pop()
+    def size(self):return len(self.items)
+    
+#from pythonds.basic.queue import Queue
+</code></pre>
+<h4 id='队列示例约瑟夫问题热土豆问题）'>队列示例：约瑟夫问题（热土豆问题）</h4>
+<p>模拟程序采用队列来存放所有参加游戏的人名，按照传递土豆方向从队首排到队尾（默认队首的人持有土豆）</p>
+<p>模拟游戏开始，只需将队首的人出队，随即再到队尾入队，算是土豆的一次传递</p>
+<p>传递了num次之后，将队首的人移除不再入队，如此反复直到队列中剩余一人</p>
+<pre><code class='language-python' lang='python'>from pythonds.basic.queue import Queue
+
+def hotPotato(namelist,num):
+    simqueue = Queue()
+    for nume in namelist:
+        simqueue.enqueue(nume)
+    
+    while simqueue.size()&gt;1:
+        for i in range(num):
+            simqueue.enqueue(simqueue.dequeue())
+        simqueue.dequeue()
+    
+    return simqueue.dequeue()
+
+print(hotPotato([&#39;Bill&#39;,&#39;David&#39;,&#39;Susan&#39;,&#39;Jane&#39;,&#39;Kent&#39;,&#39;Brad&#39;],7))
+</code></pre>
+<h4 id='队列示例打印任务问题'>队列示例：打印任务问题</h4>
+<p>多人共享同一台打印机，采取”先到先服务“的队列策略来执行打印任务</p>
+<p>考虑：1）这种打印系统的容量有多大；2）在能够接受的等待时间内，系统能容纳多少用户以多高频率提交多少打印任务？</p>
+<p>示例：</p>
+<p>1）实验室内任意一小时内，大约有10名学生在场，在这一小时内，每人会发起2次左右的打印，每次1～20页</p>
+<p>2）打印机性能：草稿模式（每分钟10页），正常模式（打印质量好，每分钟5页）</p>
+<p>问题：怎样设定打印机和模式，让大家都不会等太久的前提下尽量提高打印质量？</p>
+<p><strong>如何建模？（问题抽象化）</strong></p>
+<p>对象：打印任务（提交时间、打印页数），打印队列的属性（FIFO），打印机的属性（打印速度、是否在工作）</p>
+<p>过程：生成和提交打印任务（概率$\frac{1}{180}$每秒，打印页数1～20页等概率）</p>
+<p>模拟时间：时间框架（秒为单位），同步所有过程（在一个时间单位里，对生成打印任务和实施打印两个过程各执行一次）</p>
+<p><strong>模拟流程：</strong></p>
+<p>创建打印队列对象</p>
+<p>时间按照秒的单位流逝</p>
+<p>——按照概率生成打印作业，加入打印队列</p>
+<p>——如果打印机空闲，且队列不空，则取出队首作业打印，记录此作业等待时间（同时记录打印机状态&quot;忙&quot;）</p>
+<p>——如果打印机忙，则按照打印速度以1秒进行打印</p>
+<p>——如果当前作业打印完成，则打印机进入空闲</p>
+<p>时间用尽，开始统计平均等待时间</p>
+<p><strong>考虑变量</strong></p>
+<p>作业的等待时间（生成作业时，记录生成的时间戳；开始打印时，当前时间减去生成时间即可）</p>
+<p>作业的打印时间（生成作业时，记录作业的页数；开始打印时，页数除以打印速度即可）</p>
+<pre><code class='language-python' lang='python'>class Queue:
+    def __init__(self):self.items = []
+    def isEmpty(self):return self.items == []
+    def enqueue(self,item):self.items.insert(0,item)
+    def dequeue(self):return self.items.pop()
+    def size(self):return len(self.items)
+import random
+
+class Printer:
+    def __init__(self,ppm):
+        self.pagerate = ppm     #打印速度
+        self.currentTask = None #打印任务
+        self.timeRemaining = 0  #任务倒计时
+        
+    def tick(self):      #打印一秒
+        if self.currentTask != None:
+            self.timeRemaining = self.timeRemaining - 1
+            if self.timeRemaining &lt;=0:
+                self.currentTask = None
+                
+    def busy(self):      #是否打印忙
+        if self.currentTask != None:return True
+        else:return False
+    
+    def startNext(self,newtask): #打印新作业
+        self.currentTask = newtask
+        self.timeRemaining = newtask.getPages()*60/self.pagerate
+    
+class Task:
+    def __init__(self,time):
+        self.timestamp = time
+        self.pages = random.randrange(1,21)
+    
+    def getStamp(self):
+        return self.timestamp
+    
+    def getPages(self):
+        return self.pages
+    
+    def waitTime(self,currenttime):
+        return currenttime - self.timestamp
+
+def newPrintTask():
+    num = random.randrange(1,181)
+    if num == 180:return True
+    else:return False
+
+def simulation(numSeconds,pagesPerMinute):#模拟
+    labprinter = Printer(pagesPerMinute)
+    printQueue = Queue()
+    waitingtimes = []
+    
+    for currentSecond in range(numSeconds):
+        if newPrintTask():
+            task = Task(currentSecond)
+            printQueue.enqueue(task)
+        
+        if (not labprinter.busy()) and (not printQueue.isEmpty()):
+            nexttask = printQueue.dequeue()
+            waitingtimes.append(nexttask.waitTime(currentSecond))
+            labprinter.startNext(nexttask)
+            
+    	labprinter.tick()
+	
+    averageWait=sum(waitingtimes)/len(waitingtimes)
+    print(&quot;Average Wait %6.2f secs %3d tasks remaining.&quot;\
+          %(averageWait,printQueue.size()))
+
+for i in range(10):
+    simulation(3600,5)
+</code></pre>
+<h3 id='列表list链表实现）'>列表List（链表实现）</h3>
+<p>列表List是数据项能够维持相对位置的数据集</p>
+<h4 id='无序表unorderedlist'>无序表UnorderedList</h4>
+<p>是一种数据项按照其相对位置存放的数据集（数据项只按照存放位置来索引）</p>
+<h4 id='无序表unorderedlist的操作'>无序表UnorderedList的操作</h4>
+<pre><code class='language-python' lang='python'>List()           #创建一个空列表
+add(item)    	 #添加一个数据项到列表中，假设item原本不存在于列表中
+remove(item) 	 #从列表中移除item，列表被修改，item原本应存储于列表中
+search(item)     #在列表中查找item，返回bool类型值
+isEmpty()    	 #返回列表是否为空
+size()       	 #返回列表包含了哪些数据项
+append(item)     #添加一个数据项到末尾，假设item原先不存在于列表中
+index(item)      #返回数据项在表中的位置
+insert(pos,item) #将数据项插入到位置pos，假设item原先不存在于列表当中，同时原列表足够长使item能占据pos
+pop()        	 #从列表末尾移除数据项，假设原列表具有至少一个数据项
+pop(pos)     	 #移除位置为pos的数据项，假设原列表存在位置pos
+</code></pre>
+<h4 id='用python通过链表实现unorderedlist'>用python通过链表实现UnorderedList</h4>
+<p>为了实现无序表数据结构，可以采用链接表的方案。</p>
+<p>虽然列表数据结构要求保持数据项的前后相对位置，但这种前后位置的保持，并不要求数据项依次存放连续的存储空间。</p>
+<p>在数据项之间建立连接指向，就可以保持其相对位置（对于链首和链尾需要特殊标记）</p>
+<p><strong>节点node</strong>：每个节点至少要包含2个信息：数据项本身，以及指向下一个节点的引用信息（next为none指没有下一个节点了）</p>
+<pre><code class='language-python' lang='python'>class Node:
+    def __init__(self,initdata):
+        self.data = initdata
+        self.next = None
+    
+    def getData(self):
+        return self.data
+    
+    def getNext(self):
+        return self.next
+    
+    def setData(self,newdata):
+        self.data = newdata
+        
+	def setNext(self,newnext):
+        self.next = newnext
+</code></pre>
+<p>可以采取链接节点的方式创建数据集来实现无序表</p>
+<p>其中，链表的第一个和最后一个节点最重要（访问无序表中对象必须通过第一个节点）</p>
+<p>所以无序表必须要有对第一个节点的引用（第一个节点为none表示为空表，无序表的head始终指向链表中的第一个节点）</p>
+<p>注意，无序表对象本身不包含数据项，数据项存在节点中</p>
+<p><strong>add算法实现</strong>：由链表结构可知，添加数据项最快捷的位置是在表头（所有后续数据项都必须沿着next链逐项查找）<img src="img/截屏2022-03-17 上午8.27.00.png" referrerpolicy="no-referrer" alt="截屏2022-03-17 上午8.27.00"></p>
+<p><strong>size算法实现</strong>：从链表头head开始遍历到表尾，同时用变量累加经过的数据个数</p>
+<p><strong>search算法实现</strong>：从链表头head开始遍历到表尾，同时判断当前节点的数据项是否为目标</p>
+<p><strong>remove算法实现</strong>：首先找到item，删除节点时，这时需要将前一个节点的next指向下一个节点，所以链表remove需要包含对于上一个节点的维护（需要区分删除第一个节点和其他节点）</p>
+<pre><code class='language-python' lang='python'>class UnorderedList:
+    def __init__(self):
+        self.head = None
+    
+    def isEmpty(self):
+        return self.head == None
+    
+    def add(self,item):
+        temp = Node(item)
+        temp.setNext(self.head)
+        self.head = temp
+    
+    def size(self):
+        current = self.head
+        count = 0
+        while current != None:
+            count = count + 1
+            current = current.getNext()
+        return count
+    
+    def search(self,item):
+        current = self.head
+        found = False
+        while current != None and not found:
+            if current.getData() == item:
+                found = True
+            else:
+                current = current.getNext()
+        return found
+    
+    def remove(self,item):
+        current = self.head
+        previous = None
+        found = False
+        while not found:
+            if current.getData() == item:
+                found = True
+            else:
+                previous = current
+                current = current.getNext()
+        
+        if previous == None:
+            self.head = current.getNext()
+        else:
+            previous.setNext(current.getNext())
+</code></pre>
+<h4 id='有序表orderedlist'>有序表OrderedList</h4>
+<p>有序表是一种数据项依照其可比性质（如整数大小、字母表先后）来决定在列表中的位置</p>
+<p>越“小”的数据项越靠近表头，越“大”的数据项越靠近表尾</p>
+<p>实现有序表时，数据的“大小”适应于所有定义了<code>__gt__</code>（即“&gt;”操作符）的数据类型</p>
+<h4 id='有序表orderedlist的操作'>有序表OrderedList的操作</h4>
+<pre><code class='language-python' lang='python'>orderedList()   #创建一个空的有序表
+add(item)       #在表中添加一个数据项，并保持整体顺序
+remove(item)    #从有序表中移除一个数据项，此项应存在，有序表被修改
+search(item)    #在有序表中查找数据项，返回是否存在
+isEmpty()       #是否为空表
+size()          #返回表中数据项的个数
+index(item)     #返回数据项在表中的位置，此项应存在
+pop()           #移除有序表中最后一项，表中应至少存在一项
+pop(pos)        #移除并返回有序表中指定位置的数据项，此位置应存在
+</code></pre>
+<h4 id='用python通过链表实现orderedlist'>用python通过链表实现OrderedList</h4>
+<p>对于isEmpty/size/remove这些方法，与节点的次序无关，所以其实现跟UnorderedList是一样的，但search/add算法需稍作修改</p>
+<p><strong>search算法</strong>：可以利用链表节点有序排列的属性，来为search节省不存在的数据项的查找时间。（但对存在的元素的search速度会变慢）</p>
+<p><strong>add算法</strong>：add算法需要保持链表的有序性，需要找到第一个大于插入项的node，再将插入项插入当前节点（于是也需要previous的数据项保证对前序节点的维护）</p>
+<pre><code class='language-python' lang='python'>class OrderedList(UnorderedList):
+    def __init__(self):
+        self.head = None
+    
+    def search(self,item):
+        current = self.head
+		found = False
+		stop = False
+		while current != None and not found and not stop:
+			if current.get_data() == item:
+				found = True
+			else:
+				if current.get_data() &gt; item:
+					stop = True
+				else:
+					current = current.get_next()
+		return found
+    
+    def add(self, item):
+		current = self.head
+		previous = None
+		stop = False
+		while current != None and not stop:
+			if current.get_data() &gt; item:
+				stop = True
+			else:
+				previous = current
+				current = current.get_next()
+		temp = Node(item)
+        if previous == None:
+			temp.set_next(self.head)
+			self.head = temp
+		else:
+			temp.set_next(current)
+			previous.set_next(temp)
+</code></pre>
+<h4 id='链表实现的算法分析'>链表实现的算法分析</h4>
+<p>对于链表复杂度的分析，主要是看相应的方法是否涉及到到链表的遍历</p>
+<p><code>isEmpty</code>和无序表的<code>add</code>算法是O(1)的，因为只涉及对表头head的维护</p>
+<p><code>size/search/remove</code>和有序表的<code>add</code>算法是O(n)的，因为涉及到链表的遍历，其中size需必须要全部遍历，其余的操作按照概率平均将遍历n/2的节点</p>
+<p>链表实现的List与python内置的列表数据类型，在某些相同方法的实现上时间复杂度不同，区别主要在python内置的列表数据类型是基于顺序存储来实现的，并进行了优化</p>
+<h3 id='小结'>小结</h3>
+<p><strong>线性结构Linear DS</strong>将数据项以某种线性的次序组织起来</p>
+<p><strong>栈Stack</strong>维持了数据项后进先出LIFO的次序（push，pop，isEmpty）</p>
+<p><strong>队列Queue</strong>维持了数据项先进先出FIFO的次序（enqueue，dequeue，isEmpty）</p>
+<p><strong>书写表达式的方法有前缀prefix、中缀infix和后缀postfix三种</strong>：由于栈结构具有反转次序的特性，适合用于开发表达式求值和转换的算法</p>
+<p><strong>“模拟系统“可以通过对一个现实世界问题进行抽象建模，并加入随机数动态进行，为复杂问题的决策提供各种情况的参考</strong>：队列可以用于进行模拟系统来开发</p>
+<p><strong>双端队列Deque可以同时具备栈和队列的功能</strong>（addFront，addRear，removeFront，removeRear，isEmpty）</p>
+<p><strong>列表List是数据项能维持相对位置的数据集</strong>：链表的实现，可以保持列表维持相对位置的特点，而不需要连续的存储空间。链表实现时，其各种方法，对链表表头都需要特别的处理。</p>
+<h2 id='递归recursion'>递归Recursion</h2>
+<p><strong>递归是一种解决问题的方法，其精髓在于</strong></p>
+<p>将问题分解为<strong>规模更小的相同问题</strong>，持续分解直到问题规模小到可以用<strong>非常简单直接的方法</strong>来解决。</p>
+<p>递归的问题分解方式非常独特，其算法方面的明显特征就是在算法流程中<strong>调用自身</strong>。</p>
+<h3 id='基础递归'>基础递归</h3>
+<h4 id='初识递归数列求和'>初识递归：数列求和</h4>
+<p>给定一个列表，返回所有数的和（列表长度不确定，不允许用for等循环）</p>
+<p>认识到求和实际上最终是由一次次的加法实现的，而加法有两个操作数，这是固定的。</p>
+<p>需要将问题规模较大的列表求和分解为规模较小而且固定的两个数求和</p>
+<p>用全括号表达式求数列求和，例如：(1+(3+(5+(7+9))))</p>
+<p>观察重复模式，可以把求和问题归纳为：“数列”的和=“首个数”+“余下数列”的和</p>
+<p><code>listSum(numList)=first(numList)+listSum(rest(numList))</code></p>
+<p>数列包含的数小到只有一个时，数列的和即为这个数</p>
+<pre><code class='language-python' lang='python'>def listsum(numList):
+    if len(numList) == 1:
+        return numList[0]
+    else:
+        return numList[0] + listsum(numList[1:])
+print(listsum([1,3,5,7,9]))
+</code></pre>
+<h4 id='递归三定律'>递归“三定律”</h4>
+<p>递归算法必须有一个基本结束条件（最小规模问题的直接解决）</p>
+<p>递归算法必须能改变状态向基本结束条件演进（减小问题规模）</p>
+<p>递归算法必须调用自身（解决减小了规模的相同问题）</p>
+<h4 id='递归的应用任意进制转换'>递归的应用：任意进制转换</h4>
+<p><strong>如果是十进制？</strong></p>
+<p>十进制的十个不同符号：<code>convString = &#39;0123456789&#39;</code></p>
+<p>比十小的整数，转换为十进制，直接查表即可：<code>convString[n]</code></p>
+<p><strong>基本结束条件：小于10的整数</strong></p>
+<p><strong>向基本结束条件演进：拆解整数</strong>（除以进制基<code>// base</code>和求进制基的余数<code>% base</code>）</p>
+<p><strong>原问题分解为：</strong></p>
+<p><strong>余数</strong>总小于“<strong>进制基base</strong>”，是“<strong>基本结束条件</strong>”，可以直接查表转换</p>
+<p><strong>整数商</strong>成为“<strong>更小规模问题</strong>”，通过递归调用自身解决</p>
+<pre><code class='language-python' lang='python'>def toStr(n,base):
+    convertString = &#39;0123456789ABCDEF&#39;
+    if n&lt;base:
+        return convertString[n]
+    else:
+        return toStr(n//base,base)+convertString[n%base]
+print(toStr(1453,16))
+</code></pre>
+<h4 id='递归调用的实现'>递归调用的实现</h4>
+<p>当一个函数被调用的时候，系统会把调用时的<strong>现场数据</strong>压入<strong>系统调用栈</strong></p>
+<p>每次调用，压入栈的现场数据被称为栈帧</p>
+<p>当函数返回时，要从调用栈的顶端取得返回地址，回复现场，返回栈帧，按地址返回</p>
+<center class="half">    <img src="img/截屏2022-03-28 下午7.16.44.png" width="300">    <img src="img/截屏2022-03-28 下午7.16.04.png" width="300" height="250"> </center>
+<p><strong>递归算法程序的时候会经常会碰到这样的错误：递归层数太多，系统调用栈有限</strong></p>
+<p><code>RecursionError : maximum recursion depth exceeded while...</code></p>
+<p>这时要检查程序中是否忘记设置<strong>基本结束条件</strong>，导致无限递归</p>
+<p>或者<strong>向基本结束条件演进太慢</strong>，导致递归层数太多，调用栈溢出</p>
+<p>在Python内置的sys模块可以获取和调整最大递归深度</p>
+<pre><code class='language-python' lang='python'>&gt;&gt;&gt; import sys
+&gt;&gt;&gt; sys.getrecursionlimit()
+1000
+&gt;&gt;&gt; sys.getrecursionlimit(3000)
+&gt;&gt;&gt; sys.getrecursionlimit()
+3000
+</code></pre>
+<h4 id='递归可视化分形树'>递归可视化：分形树</h4>
+<p><strong><code>Python</code>的海龟作图<code>turtle module</code></strong></p>
+<pre><code class='language-python' lang='python'>forward(n) backward(n) #爬行（前进/后退）
+left(a) right(a)       #转向
+penup() pendown()      #抬笔放笔
+pensize(s) pencolor(c) #笔的属性
+</code></pre>
+<p><strong>示例（循环，画五角星）：</strong></p>
+<pre><code class='language-python' lang='python'>import turtle
+t= turtle.Turtle()
+
+#作图开始
+t.pencolor(&#39;red&#39;)
+t.pensize(3)
+for i in range(5)
+	t.forward(100)
+    t.right(144)
+t.hideturtle()  #隐藏turtle
+
+#作图结束
+turtle.done()
+</code></pre>
+<p><strong>示例（递归，画螺旋）：</strong></p>
+<pre><code class='language-python' lang='python'>import turtle
+t= turtle.Turtle()
+
+def drawSpiral(t,lineLen):
+    if lineLen &gt; 0:
+        t.forward(lineLen)
+        t.right(90)
+        drawSpiral(t, lineLen - 5)
+
+drawSpiral(t, 100)
+
+turtle.done()
+</code></pre>
+<p><strong>分形Fractal（1975）</strong></p>
+<p>一个粗糙或零碎的几何形状，可以分成数个部分，且每一部分都（至少近似地）是整体缩小后的形状，即具有<strong>自相似</strong>的性质。（or 分形是在不同尺度上都具有相似性的事物）</p>
+<p>自然现象中所具备的分形特性，使得计算机可以通过分形算法生成非常逼真的自然场景。</p>
+<p><strong>分形树</strong></p>
+<pre><code class='language-python' lang='python'>import turtle
+
+def tree(branch_len):
+    if branch_len &gt; 5: #树干太短不画，即递归结束条件
+        t.forward(branch_len)
+        t.right(20)
+        tree(branch_len - 15)
+        t.left(40)
+        tree(branch_len - 15)
+        t.right(20)
+        t.backward(branch_len)
+
+t = turtle.Turtle()
+t.left(90)
+t.penup()
+t.backward(100)
+t.pendown()
+t.pencolor(&#39;green&#39;)
+t.pensize(2)
+tree(75)
+t.hideturtle()
+turtle.done()
+</code></pre>
+<h4 id='递归可视化谢尔宾斯基三角形'><strong>递归可视化：谢尔宾斯基三角形</strong></h4>
+<p>分形构造，平面称谢尔宾斯基三角形，立体称谢尔宾斯基金字塔</p>
+<p>实际上，真正的谢尔宾斯基三角形是完全不可见的，其面积为0，但周长无穷，是一个介于一维和二维之间的分数维构造（约1.585维构造）</p>
+<p>根据自相似特性，谢尔宾斯基三角形是由三个尺寸减半的谢尔宾斯基三角形按照品字形拼叠而成</p>
+<p>$degree=n$的三角形是由三个$degree=n-1$的三个尺寸减半的三角形构成的</p>
+<pre><code class='language-python' lang='python'>import turtle
+
+def sierpinski(degree,point):
+    colormap = [&#39;blue&#39;,&#39;red&#39;,&#39;green&#39;,&#39;white&#39;,&#39;yellow&#39;,&#39;orange&#39;]
+    drawTriangle(points,colormap[degree])
+    if degree&gt;0:
+        sierpinski(degree -1,
+                  {&#39;left&#39;:points[&#39;left&#39;],
+                  &#39;top&#39;:getMid(points[&#39;left&#39;],points[&#39;top&#39;]),
+                  &#39;right&#39;:getMid(points[&#39;left&#39;],points[&#39;right&#39;])})
+        sierpinski(degree -1,
+                  {&#39;left&#39;:getMid(points[&#39;left&#39;],points[&#39;top&#39;]),
+                  &#39;top&#39;:points[&#39;top&#39;],
+                  &#39;right&#39;:getMid(points[&#39;top&#39;],points[&#39;right&#39;])})
+        sierpinski(degree -1,
+                  {&#39;left&#39;:getMid(points[&#39;left&#39;],points[&#39;right&#39;]),
+                  &#39;top&#39;:getMid(points[&#39;top&#39;],points[&#39;right&#39;]),
+                  &#39;right&#39;:points[&#39;right&#39;]})
+def drawTrangle(point,color):
+    t.fillcolor(color)
+    t.penup()
+    t.goto(points[&#39;top&#39;])
+    t.pendown()
+    t.begin_fill()
+    t.goto(points[&#39;left&#39;])
+    t.goto(points[&#39;right&#39;])
+    t.goto(points[&#39;top&#39;])
+    t.end_fill()
+
+def getMid(p1,p2):
+    return ((p1[0]+p2[0])/2,(p1[1]+p2[1])/2)
+
+t = turtle.Turtle()
+
+points = {&#39;left&#39;:(-200,-100),
+         &#39;top&#39;:(0,200),
+         &#39;right&#39;:(200,-100)}
+sierpinski(5,points)
+turtle.done()
+</code></pre>
+<h4 id='递归的应用汉诺塔'>递归的应用：汉诺塔</h4>
+<p>将盘片塔从<strong>开始柱</strong>，经由<strong>中间柱</strong>，移动到<strong>目标柱</strong></p>
+<p>首先将上层N-1个盘片的盘片塔，从开始柱，经由目标柱，移动到中间柱</p>
+<p>然后将第N个最大的盘片，从开始柱，移动到目标柱</p>
+<p>最后将放置在中间柱的N-1个盘片的盘片塔，由开始柱，移动到目标柱</p>
+<p><strong>基本结束条件：1个盘片的移动问题</strong></p>
+<p>程序实现：</p>
+<pre><code class='language-python' lang='python'>def moveTower(height,fromPole,withPole,toPole):
+    if height &gt;= 1:
+        moveTower(height-1,fromPole,toPole,withPole)
+        moveDisk(height,fromPole,toPole)
+        moveTower(height-1,withPole,fromPole,toPole)
+def moveDisk(disk,fromPole,toPole):
+    print(f&quot;Moving disk[{disk}] from {fromPole} to {toPole}&quot;)
+moveTower(3,&#39;#1&#39;,&#39;#2&#39;,&#39;#3&#39;)
+</code></pre>
+<h4 id='递归的应用探索迷宫'>递归的应用：探索迷宫</h4>
+<p>将海龟放在迷宫中间，如何能找到出口</p>
+<p>首先，将整个迷宫的空间（矩形）分成行列整齐的方格，区分出墙壁和通道。</p>
+<p>给每个方格属性：行列位置，“墙壁”/“通道”</p>
+<p><strong>考虑用矩阵方式来实现迷宫数据结构</strong>：</p>
+<p>采用“数据项为字符列表的列表”这种二级列表来存储方格内容</p>
+<p>采用不同字符来分别代表“墙壁+”、“通道 ”、”海龟投放点S“</p>
+<p>从一个文本文件逐行读入数据</p>
+<pre><code class='language-python' lang='python'>class Maze:
+    def __init__(self,mazeFileName):
+        rowsInMaze = 0
+        columnsInMaze = 0
+        self.mazelist = []
+        mazeFile = open(mazeFileName,&#39;r&#39;)
+        rowsInMaze = 0
+        for line in mazeFile:
+            rowList = []
+            col = 0
+            for ch in line[:-1]:
+                rowList.append(ch)
+                if ch == &#39;S&#39;:
+                    self.startRow = rowsInMaze
+                    self.startCol = col
+                col = col + 1
+            rowsInMaze = rowsInMaze + 1
+            self.mazelist.append(rowList)
+            colomnsInMaze = len(rowList)
+</code></pre>
+<p><strong>确定了迷宫数据结构之后，我们知道，对于海龟来说，其身处某一个方格之中</strong></p>
+<p>这样，探索迷宫的递归算法思路如下：</p>
+<p>将海龟从原位置向北移动一步，以新位置递归调用探索迷宫寻找出口</p>
+<p>如果找不到出口，那么将海龟从原位置向南移动一步，以新位置递归调用探索迷宫寻找出口</p>
+<p>如果找不到出口，那么将海龟从原位置西南移动一步，以新位置递归调用探索迷宫寻找出口</p>
+<p>如果找不到出口，那么将海龟从原位置向东移动一步，以新位置递归调用探索迷宫寻找出口</p>
+<p>如果上述四个方向都找不到出口，那么这个迷宫没有出口</p>
+<p><strong>细节：不能返回原位置之后不能再重走原来的路，所以需要有个机制记录海龟走过的路径</strong></p>
+<p>沿途洒”面包屑“，一旦发现前进方向有“面包屑”，就不能再踩上去，必须换下一个方向进行尝试</p>
+<p>对于递归调用来说，就是某方向的方格上若发现“面包屑”，就立即从递归调用返回上一级</p>
+<p>递归调用的<strong>基本结束条件</strong>：</p>
+<p>海龟碰到“墙壁方格”，递归调用结束，返回失败</p>
+<p>海龟碰到“面包屑”方格，表示此方格已访问过，递归调用结束，返回失败</p>
+<p>海龟碰到“出口方格“，即“位于边缘的通道”方格，递归调用结束，返回成功</p>
+<p>海龟在四个方向上都探索失败，递归调用结束，返回失败</p>
+<pre><code class='language-python' lang='python'>def searchFrom(maze,startRow,startColumn):
+    #1.碰到墙壁，返回失败
+    maze.updatePositiom(startRow,startColume)
+    if maze[startRow][startColumn] == OBSTACLE:
+        return False
+    
+    #2.碰到面包屑，或者死胡同，返回失败
+    if maze[startRow][startColumn] == TRIED or \
+       maze[startRow][startColumn] == DEAD_END:
+            return False
+    
+    #3.碰到出口，返回成功
+    if maze.isExit(startRow,startColumn):
+        maze.updatePosition(startRow,startColumn,PART_OF_PATH)
+        return True
+    
+    #4.洒下面包屑，继续探索
+    maze.updatePosition(startRow,startColumn,TRIED)
+    
+    #从东南西北4个方向依次探索，or操作符具有短路效应(顺序计算)
+    found = searchFrom(maze,startRow-1,startColumn) or \
+    		searchFrom(maze,startRow+1,startColumn) or \
+        	searchFrom(maze,startRow,startColumn-1) or \
+            searchFrom(maze,startRow,startColumn+1)
+    
+    #如果探索成功，标记当前点，失败则标记为“死胡同”
+    if found:
+        maze.updatePosition(startRow,startColume,PART_OF_PATH)
+    else:
+        maze.updatePosition(startRow,startColume,DEAD_END)
+    return found
+</code></pre>
+<h3 id='分治贪心和动态规划'>分治，贪心和动态规划</h3>
+<h4 id='分治策略'>分治策略</h4>
+<p>将问题分为若干更小规模的部分</p>
+<p>通过解决每一个小规模部分的问题，将结果汇总得到原问题的解</p>
+<p><strong>递归三定律</strong>（基本结束条件，缩小规模，调用自身）也体现了分治策略</p>
+<p>应用相当广泛：排序、查找、遍历、求值</p>
+<h4 id='优化问题和贪心策略'>优化问题和贪心策略</h4>
+<p><strong>优化问题：找到某些问题的最优解</strong></p>
+<p>经典问题：找零数量最少</p>
+<p><strong>贪心策略</strong>：每次都试图解决问题的尽量大的一部分：对应到兑换硬币问题，就是每次以最多数量的最大面值硬币来迅速减少找零面值</p>
+<p>贪心策略可能失效：如 如果有21‘的硬币，63’的最优解应当是3*21‘！</p>
+<p>（贪心策略是否有效依赖于具体的硬币体系）</p>
+<h4 id='找零兑换递归方法'>找零兑换：递归方法</h4>
+<p><strong>基本结束条件</strong>：需要兑换的找零，其<strong>面值</strong>正好<strong>等于</strong>某种<strong>硬币</strong></p>
+<p><strong>减小问题的规模</strong>：对每种硬币尝试一次最大兑换，剩下的问题规模就缩小了；从所有枚举中选择最少的一个</p>
+<pre><code class='language-python' lang='python'>def recMC(coinValueList,change):
+    minCoins = change
+    if change in coinValueList:
+        return 1
+    else:
+        for i in [c for c in coinValueList if c &lt;= change]:
+            numCoins = 1 + recMC(coinValueList,change-i)
+            if numCoins &lt; minCoins:
+                minCoins = numCoins
+	return minCoins
+print(recDC([1,5,10,25],63))
+</code></pre>
+<p>递归解法虽然能解决问题，但其最大的问题是极其低效</p>
+<p>因为直接进行递归调用中重复计算过多</p>
+<p>对这个递归解法进行改进的关键就在于<strong>消除重复计算</strong>：可以用一个表将计算过的中间过程保存起来，在计算之前查表看看是否已经计算过</p>
+<p>这个算法的中间结果就是部分找零的最优解，在递归调用的过程中已经得到的最优解被记录下来，在递归调用之前先查找表中是否已经有结果</p>
+<pre><code class='language-python' lang='python'>def recMC(coinValueList,change,knownResults):
+    minCoins = change
+    if change in coinValueList:
+        knownResults[change]=1
+        return 1
+    elif knownResults[change]&gt;0:
+        return knownResults[change]
+    else:
+        for i in [c for c in coinValueList if c &lt;= change]:
+            numCoins = 1 + recMC(coinValueList,change-i,knownResults)
+            if numCoins &lt; minCoins:
+                minCoins = numCoins
+                knownResults[change] = minCoins
+	return minCoins
+print(recDC([1,5,10,25],63,[0]*64))
+</code></pre>
+<h4 id='找零兑换动态规划'>找零兑换：动态规划</h4>
+<p>动态规划算法采用了一种<strong>更有条理</strong>的方式来得到问题的解</p>
+<p>找零兑换的动态规划算法从最简单的“1分钱找零”开始，逐步递加上去，直到我们需要的找零钱数</p>
+<p>在找零递加的过程中，设法保证每一分钱的递加都是最优解，一直加到求解找零钱数，自然找到最优解</p>
+<pre><code class='language-python' lang='python'>def dpMakeChange(coinValueList,change,minCoins):
+    for cents in range(1,change+1):
+        coinCount = cents
+        for j in [c for c in coinValueList if c &lt;= cents]:
+            if minCoins[cents-j]+1&lt;coinCount:
+                coinCount = minCoins[cents-j]+1
+        minCoins[cents] = coinCount
+    return minCoins[change]
+print(dpMakeChange([1,5,10,25],63,[0]*64))
+</code></pre>
+<p>注意到动态规划算法<code>dpMakeChange</code>并不是递归函数</p>
+<p>动态规划算法中最主要的思想是：从最简单情况开始找到所需找零的循环；其每一步都依靠以前的最优解来得到本步骤的最优解，直到得到答案</p>
+<h4 id='找零兑换动态规划扩展'>找零兑换：动态规划扩展</h4>
+<p>前面的算法已经得到了最少硬币的数量，但并没有返回硬币如何组合</p>
+<p>扩展算法的思路很简单，只需要在生成最优解列表同时跟踪记录所选择的那个硬币币值即可</p>
+<p>在得到最后的解后，减去选择的硬币币值，回溯到表格之前的部分找零，就能逐步得到每一步所选择的硬币币值</p>
+<pre><code class='language-python' lang='python'>def dpMakeChange(coinValueList,change,minCoins,coinsUsed):
+    for cents in range(1,change+1):
+        coinCount = cents
+        newCoin = 1
+        for j in [c for c in coinValueList if c &lt;= cents]:
+            if minCoins[cents-j]+1&lt;coinCount:
+                coinCount = minCoins[cents-j]+1
+                newCoin = j
+        minCoins[cents] = coinCount
+        coinsUsed[cents] = newCoin
+    return minCoins[change]
+
+def printCoins(coinUsed,change):
+    coin = change
+    while coin&gt;0:
+        thisCoin = coinUsed[coin]
+        print(thisCoin)
+        coin = coin - thisCoin
+
+amnt = 63
+clist = [1,5,10,21,25]
+coinsUsed = [0]*(amnt+1)
+coinCount = [0]*(amnt+1)
+
+print(&quot;Makeing change for&quot;, amnt, &quot;requires&quot;)
+print(dpMakeChange(clist,amnt,coinCount,coinsUsed),&quot;coins&quot;)
+print(&quot;They are&quot;)
+printCoins(coinsUsed,amnt)
+print(&quot;The used list is as follows:&quot;)
+print(coinsUsed)
+</code></pre>
+<h4 id='博物馆大盗问题动态规划'>博物馆大盗问题：动态规划</h4>
+<p>一大盗潜入博物馆，面前有5件宝物，分别有重量和价值，大盗的背包仅能负重20公斤，请问如何选择宝物，总价值最高</p>
+<p>我们把<code>m(i,W)</code>记为前<code>i</code>个宝物中，组合<strong>不超过</strong><code>W</code>重量，得到的最大价值</p>
+<p>递推：<code>m(i,W)</code>应该是<code>m(i-1,W)</code>和<code>m(i-1,W-Wi)+vi</code>两者最大值，我们从<code>m(1,1)</code>计算到<code>m(5,20)</code></p>
+<pre><code class='language-python' lang='python'>#宝物重量与价值
+tr = [None,{&#39;w&#39;:2,&#39;v&#39;:3},{&#39;w&#39;:3,&#39;v&#39;:4},
+      	   {&#39;w&#39;:4,&#39;v&#39;:8},{&#39;w&#39;:5,&#39;v&#39;:8},
+           {&#39;w&#39;:9,&#39;v&#39;:10}]
+#大盗最大承重
+max_w = 20
+
+#初始化二维表格m[(i,w)]
+#表示前i个宝物中，最大重量w的组合，所得到的最大价值
+#当i什么都不取，或w上限为0，价值均为0
+m = {(i,w):0 for i in range(len(tr))
+               for w in range(max_w+1)}
+
+#逐个填写二维表格
+for i in range(1,len(tr)):
+    for w in range(1,max_w+1):
+        if tr[i][&#39;w&#39;]&gt;w:#装不下第i个宝物
+            m[(i,w)]=m[(i-1,w)]
+        else:#不装第i个宝物，装第i个宝物，两种情况下最大价值
+            m[(i,w)]=max(
+                m[(i-1,w)],
+                m[(i-1,w-tr[i][&#39;w&#39;])]+tr[i][&#39;v&#39;])
+#输出结果
+print(m[((len(tr)-1),max_w)])
+</code></pre>
+<h4 id='博物馆大盗问题递归方法'>博物馆大盗问题：递归方法</h4>
+<pre><code class='language-python' lang='python'>#宝物的重量和价值
+tr = {(2,3),(3,4),(4,8),(5,8),(9,10)}
+
+#大盗最大承重
+max_w = 20
+
+#初始化记忆化表格m
+#key是(宝物组合，最大重量),value是最大价值
+m={}
+
+def thief(tr,w):
+    if tr == set() or w == 0:
+        m[(tuple(tr),w)] = 0 #tuple是key的要求
+        return 0
+    elif (tuple(tr),w) in m:
+        return m[(tuple(tr),w)]
+    else:
+        vmax = 0
+        for t in tr:
+            if t[0] &lt;= w:
+                #逐个从集合中去掉某个宝物，递归调用
+                #选出所有价值中的最大值
+                v = thief(tr-{t},w-t[0])+t[1]
+                vmax = max(vmax,v)
+            m[(tuple(tr),w)] = vmax
+            return vmax
+#输出结果
+print(thief(tr,max_w))
+</code></pre>
+<h3 id='递归小结'>递归小结</h3>
+<p>递归是解决某些具有自相似性的复杂问题的有效技术</p>
+<p>递归算法“三定律”：基本结束条件，减小规模，调用自身</p>
+<p>某些情况下，递归可以代替迭代循环</p>
+<p>递归算法通常能够和问题的表达自然契合</p>
+<p>有时候递归算法会引发巨量的重复计算（通过“记忆化/函数值缓存”有效减少重复计算）</p>
+<p>如果一个问题最优解包括<strong>规模更小</strong>相同问题的最优解，就可以用动态规划来解决</p>
+<h2 id='排序与查找'>排序与查找</h2>
+<h3 id='排序算法-1'>排序算法</h3>
+<h4 id='冒泡排序bubble-sort'>冒泡排序Bubble Sort</h4>
+<p>冒泡排序的算法思路在于对无序表进行多趟比较变换，每趟包括了多次两两相邻比较，并将逆序的数据项交换位置，最终能将本趟的最大项就位，经过n-1次比较变换，所有数据项就位</p>
+<p>对于第一趟：进过最大项后，最大项会一直比对到最后一项，共需n-1次比对</p>
+<p>对于第i趟：由于已经有i-1项排完了，共需n-i次比对</p>
+<pre><code class='language-python' lang='python'>def bubbleSort(alist):
+    for passnum in range(len(alist) - 1, 0, -1):
+        for i in range(passnum):
+            if alist[i] &gt; alist[i + 1]:
+                alist[i],alist[i+1]=alist[i+1],alist[i]
+
+
+alist = [54, 26, 93, 17, 77, 31, 44, 55, 20]
+bubbleSort(alist)
+print(alist)
+</code></pre>
+<p>算法必定发生比对次数$\frac{1}{2}n^2-\frac{1}{2}n$，比对的时间复杂度是O(n^2)</p>
+<p>对于交换次数，时间复杂度也是O(n^2)，且通常每次交换包含3次赋值，最好的情况是列表已经有序，交换次数为0，最坏的情况是每次比对都需要交换，平均来说交换的时间复杂度与比对的时间复杂度数量级一致</p>
+<p>冒泡排序：<strong>算法分析</strong></p>
+<p>冒泡排序通常作为<strong>时间效率较差</strong>的排序算法，来作为其他算法的基准。</p>
+<p>其效率主要差在每个数据项在找到其最终位置之前，必须要经过<strong>多次比对和交换</strong>，其中<strong>大部分操作都是无效的</strong>。</p>
+<p>但有两点优势，就是<strong>无需任何额外的存储空间开销</strong>，且只涉及相邻数据项的比对，在多种数据结构中都可以使用。</p>
+<p>冒泡排序：<strong>性能改进</strong></p>
+<p>如果某次比对未发生过交换，可以提前确定排序是否完成（这也是多数其他排序算法无法实现的）</p>
+<pre><code class='language-python' lang='python'>def shortbubbleSort(alist):
+    exchanges = True
+    passnum = len(alist) - 1
+    while passnum &gt; 0 and exchanges:
+        exchanges = False
+        for i in range(passnum):
+            if alist[i] &gt; alist[i + 1]:
+                exchanges = True
+                alist[i], alist[i + 1] = alist[i + 1], alist[i]
+        passnum = passnum - 1
+
+
+alist = [54, 26, 93, 17, 77, 31, 44, 55, 20]
+shortbubbleSort(alist)
+print(alist)
+</code></pre>
+<p>但它不改变冒泡排序的基本复杂度O(n^2)</p>
+<h4 id='选择排序selection-sort'>选择排序Selection Sort</h4>
+<p>选择排序对冒泡排序进行了改进，保留了基本的多趟对比思路，每趟都使当前最大项就位。</p>
+<p>但选择排序对交换进行了削减，相比于冒泡排序进行多次交换，选择排序记录最大项的所在位置，最后再跟本趟最后一项交换</p>
+<p>选择排序的时间复杂度比冒泡排序稍优（对比次数O(n^2)，交换次数O(n)）</p>
+<pre><code class='language-python' lang='python'>def selectionSort(alist):
+    for fillslot in range(len(alist) - 1, 0, -1):
+        positionOfMax = 0
+        for location in range(1, fillslot + 1):
+            if alist[location] &gt; alist[positionOfMax]:
+                positionOfMax = location
+        alist[fillslot], alist[positionOfMax] = alist[positionOfMax], alist[fillslot]
+
+
+alist = [54, 26, 93, 17, 77, 31, 44, 55, 20]
+selectionSort(alist)
+print(alist)
+</code></pre>
+<h4 id='插入排序insertion-sort'>插入排序Insertion Sort</h4>
+<p>插入排序时间复杂度依旧是O(n^2)，但算法思路与冒泡排序不同</p>
+<p>插入排序维持一个已排好序的子列表，其位置始终在列表的前部，然后逐步扩大这个子列表直至全表</p>
+<p>插入排序的比对主要用来寻找<strong>新项的插入位置</strong></p>
+<p>最差情况是每趟都与子列表中所有项进行比对，总比对次数与冒泡排序相同，数量级仍是O(n^2)</p>
+<p>最好情况，列表已经排好序的时候，每趟仅需一次比对，总次数是O(n)</p>
+<p>插入的实现：比对并<strong>移动所有比新项大的数据项</strong></p>
+<pre><code class='language-python' lang='python'>def insertionSort(alist):
+    for index in range(1, len(alist)):
+        currentvalue = alist[index]
+        position = index
+
+        while position &gt; 0 and alist[position - 1] &gt; currentvalue:
+            alist[position] = alist[position - 1]
+            position = position - 1
+        alist[position] = currentvalue
+
+
+alist = [54, 26, 93, 17, 77, 31, 44, 55, 20]
+insertionSort(alist)
+print(alist)
+</code></pre>
+<p>由于此时移动操作仅包含一次赋值，是交换操作的1/3，所以插入排序性能（比冒泡排序）会较好一些</p>
+<h4 id='谢尔排序shell-sort'>谢尔排序Shell Sort</h4>
+<p>列表越接近有序，插入排序的比对次数就越少</p>
+<p>谢尔排序以插入排序作为基础，对无序表进行<strong>间隔划分子列表</strong>，对每个子列表执行插入排序</p>
+<p>随着子列表的数量越来越少，无序表的整体越来越接近有序，从而减少整体排序的比对次数</p>
+<p>最后一趟是标准的插入排序，但由于前面几趟已经将列表处理到接近有序，这一趟只需少数几次移动即可完成</p>
+<p>子列表的间隔一般从n/2开始，每趟倍减n/4，n/8...直到1</p>
+<pre><code class='language-python' lang='python'>def shellSort(alist):
+    sublistcount = len(alist) // 2  # 间隔设定
+    while sublistcount &gt; 0:
+        for startposition in range(sublistcount):  # 子列表排序
+            gapInsertionSort(alist, startposition, sublistcount)
+        #print(&#39;After increments of size&#39;, sublistcount, &#39;the list is&#39;, alist)
+        sublistcount = sublistcount // 2  # 间隔缩小
+
+
+def gapInsertionSort(alist, start, gap):
+    for i in range(start + gap, len(alist), gap):
+        currentvalue = alist[i]
+        position = i
+        while position &gt;= gap and alist[position - gap] &gt; currentvalue:
+            alist[position] = alist[position - gap]
+            position = position - gap
+        alist[position] = currentvalue
+
+
+alist = [54, 26, 93, 17, 77, 31, 44, 55, 20]
+shellSort(alist)
+print(alist)
+</code></pre>
+<p>插入排序每趟都使得列表更加接近有序，这个过程会减少很多原先需要的<strong>无效</strong>比对</p>
+<p>对谢尔排序的详尽分析比较复杂，大致说是介于O(n)和O(n^2)之间</p>
+<p>如果将间隔保持在$2^k-1(1,3,7,15,31\dots)$，谢尔排序的时间复杂度约为$O(n^{\frac{3}{2}})$</p>
+<h4 id='归并排序merge-sort'>归并排序Merge Sort</h4>
+<p><strong>归并排序</strong>是<strong>分治策略</strong>在排序中的应用</p>
+<p><strong>基本结束条件</strong>：数据表中仅有一个数据项</p>
+<p><strong>缩小规模</strong>：将数据表分裂为相等的两半</p>
+<p><strong>调用自身</strong>：将两半分别调用自身排序，然后将分别排好序的两半合并</p>
+<pre><code class='language-python' lang='python'>def mergeSort(alist):
+    if len(alist) &gt; 1:  # 基本结束条件
+        mid = len(alist) // 2
+        lefthalf = alist[:mid]
+        righthalf = alist[mid:]
+
+        # 递归调用
+        mergeSort(lefthalf)
+        mergeSort(righthalf)
+
+        # 归并
+        i = j = k = 0
+        
+        while i &lt; len(lefthalf) and j &lt; len(righthalf):
+            if lefthalf[i] &lt; righthalf[j]:
+                alist[k] = lefthalf[i]
+                i = i + 1
+            else:
+                alist[k] = righthalf[j]
+                j = j + 1
+            k = k + 1
+            
+        while i &lt; len(lefthalf):#归并左半部剩余项
+            alist[k] = lefthalf[i]
+            i = i + 1
+            k = k + 1
+            
+        while j &lt; len(righthalf):#归并右半部剩余项
+            alist[k] = righthalf[j]
+            j = j + 1
+            k = k + 1
+
+
+alist = [54, 26, 93, 17, 77, 31, 44, 55, 20]
+mergeSort(alist)
+print(alist)
+</code></pre>
+<p>另一个归并排序算法（更Pythonic）</p>
+<pre><code class='language-python' lang='python'>def merge_sort(lst):
+    # 递归结束条件
+    if len(lst) &lt;= 1:
+        return lst
+
+    # 分解问题，递归调用
+    middle = len(lst) // 2
+    left = merge_sort(lst[:middle])
+    right = merge_sort(lst[middle:])
+
+    # 合并左右半部，完成排序
+    merged = []
+    while left and right:
+        if left[0] &lt;= right[0]:
+            merged.append(left.pop(0))
+        else:
+            merged.append(right.pop(0))
+    merged.extend(right if right else left)
+
+    return merged
+
+
+alist = [54, 26, 93, 17, 77, 31, 44, 55, 20]
+print(merge_sort(alist))
+</code></pre>
+<p>归并排序：<strong>算法分析</strong></p>
+<p>分裂过程：时间复杂度O(log n)</p>
+<p>归并过程：相对于每个数据项都会被放置一次，每次放置前比较一次，所以是线性复杂度，时间复杂度是O(log n)</p>
+<p>综合考虑：每次分裂的部分进行一次O(n)的数据项归并，总时间复杂度O(nlog n)</p>
+<p>但是注意到：归并排序算法使用了<strong>额外一倍的存储空间</strong>用于归并，这个特性在处理特大数据集进行排序时</p>
+<h4 id='快速排序quick-sort'>快速排序Quick Sort</h4>
+<p>快速排序的思路是依据一个中值数据项来把数据表分为两半：然后对每部分分别进行快速排序（递归）</p>
+<p>如果希望这两半有相同数量的数据项，则应该找到数据表的”中位数“</p>
+<p>但找中位数需要计算开销：要想没有开销，只能随意找一个数来充当中值</p>
+<p><strong>基本结束条件</strong>：数据表中仅有一个数据项</p>
+<p><strong>缩小规模</strong>：根据<strong>中值</strong>，将数据表分为两半，最好的情况是相等规模的两半</p>
+<p><strong>调用自身</strong>：将两半分别调用自身进行排序</p>
+<p>分裂数据表的目标：<strong>找到中值的位置</strong></p>
+<p>分裂数据表的手段：设置左右标（left/rightmark）</p>
+<p>	左标向右移动，碰到比中值大的就停止</p>
+<p>	右标向左移动，碰到比中值小的就停止</p>
+<p>	然后将左右标所指数据项交换</p>
+<p>	移动直到左标移动到右标的右侧，停止移动</p>
+<p>	此时右标所指的位置就是中值应处的位置</p>
+<p>	将中值和这个位置交换</p>
+<p>	分裂完成，左半部比中值小，右半部比中值大</p>
+<pre><code class='language-python' lang='python'>def quickSort(alist):
+    quickSortHelper(alist, 0, len(alist) - 1)
+
+
+def quickSortHelper(alist, first, last):
+    if first &lt; last:
+        splitpoint = partition(alist, first, last)
+        quickSortHelper(alist, first, splitpoint - 1)
+        quickSortHelper(alist, splitpoint + 1, last)
+
+
+def partition(alist, first, last):
+    # 选定中值
+    pivotvalue = alist[first]
+
+    # 左右标初值
+    leftmark = first + 1
+    rightmark = last
+
+    done = False
+    while not done:
+        while leftmark &lt;= rightmark and \
+                alist[leftmark] &lt;= pivotvalue:
+            leftmark = leftmark + 1
+        while rightmark &gt;= leftmark and \
+                alist[rightmark] &gt;= pivotvalue:
+            rightmark = rightmark - 1
+        if rightmark &lt; leftmark:  # 两标交错即结束移动
+            done = True
+        else:  # 交换左右标
+            alist[rightmark], alist[leftmark] = \
+                alist[leftmark], alist[rightmark]
+
+    alist[first], alist[rightmark] = \
+        alist[rightmark], alist[first]  # 中值就位
+    return rightmark  # 中值点，也就是分裂点
+
+
+alist = [54, 26, 93, 17, 77, 31, 44, 55, 20]
+quickSort(alist)
+print(alist)
+</code></pre>
+<p>快速排序：<strong>算法分析</strong></p>
+<p>快速排序过程分为两部分：<strong>分裂和移动</strong></p>
+<p><strong>如果分裂总能把数据表分为相等的两部分</strong>，那么复杂度为O(log n)</p>
+<p>而移动需要将每项都与中值进行比对，还是O(n)</p>
+<p><strong>综合起来就是O(nlog n)，且算法运行过程中不需要额外的存储空间。</strong></p>
+<p>但是如果中值所在的分裂点过于偏离中部，造成左右两部分数量不平衡，对于极端情况，时间复杂度就退化到O(n^2)，加上递归调用的开销，时间复杂度可能比冒泡排序还差</p>
+<p>可以适当改进<strong>中值</strong>的选取算法，让中值更具有代表性：比如三点取样，从数据表的头尾中间选出中值，但这样的选取方法会产生额外开销，且仍然不能排除极端情况。</p>
+<h3 id='基础查找顺序与二分查找'>基础查找：顺序与二分查找</h3>
+<h4 id='顺序查找sequential-search'>顺序查找Sequential Search</h4>
+<pre><code class='language-python' lang='python'>def sequentialSearch(alist, item):
+    pos = 0
+    found = False
+
+    while pos &lt; len(alist) and not found:
+        if alist[pos] == item:
+            found = True
+        else:
+            pos = pos + 1
+
+    return found
+
+
+testlist = [1, 2, 32, 8, 17, 19, 42, 13, 0]
+print(sequentialSearch(testlist, 3))
+print(sequentialSearch(testlist, 13))
+</code></pre>
+<p>要对查找算法进行分析，首先要确定其中的<strong>基本计算步骤：数据项比对</strong></p>
+<p>基本计算步骤必须要<strong>足够简单</strong>，且在算法中<strong>反复执行</strong></p>
+<p>比对：当前数据项等于还是不等于要查找的数据项。比对的次数决定了<strong>算法复杂度</strong></p>
+<p><strong>如果假定列表中的数据项随机出现：</strong></p>
+<p>如果数据项在列表中：比对次数是n</p>
+<p>如果数据项不在列表中：最好的情况1次比对，最差的情况n次比对，平均情况下比对次数是n/2</p>
+<p><strong>如果再假定列表是有序表：</strong></p>
+<p>可以在中间提前退出查找</p>
+<pre><code class='language-python' lang='python'>def ordersequentialSearch(alist, item):
+    pos = 0
+    found = False
+    stop = False
+
+    while pos &lt; len(alist) and not found and not stop:
+        if alist[pos] == item:
+            found = True
+        else:
+            if alist[pos] &gt; item:
+                stop = True
+            else:
+                pos = pos + 1
+
+    return found
+
+
+testlist = [0, 1, 2, 8, 13, 17, 19, 32, 42]
+print(ordersequentialSearch(testlist, 3))
+print(ordersequentialSearch(testlist, 13))
+</code></pre>
+<p>这样在数据项不存在时，有序表的查找能节省一些比对次数，但并不改变其数量级</p>
+<h4 id='二分查找binary-search'>二分查找Binary Search</h4>
+<p>对于有序表，利用其特性，可以迅速缩短待比对数据项的范围</p>
+<p>从列表中间开始比对，如果匹配即结束，如果不匹配则通过比较大小确定数据项可能出现在此项之前或此项之后</p>
+<p>这样每次比对，都会把比对范围缩小一半</p>
+<pre><code class='language-python' lang='python'>def binarySearch(alist, item):
+    first = 0
+    last = len(alist) - 1
+    found = False
+
+    while first &lt;= last and not found:
+        midpoint = (first + last) // 2
+        if alist[midpoint] == item:
+            found = True
+        else:
+            if item &lt; alist[midpoint]:
+                last = midpoint - 1
+            else:
+                first = midpoint + 1
+
+    return found
+
+
+testlist = [0, 1, 2, 8, 13, 17, 19, 32, 42]
+print(binarySearch(testlist, 3))
+print(binarySearch(testlist, 13))
+</code></pre>
+<p>二分查找：<strong>分治策略</strong></p>
+<p>将问题分为规模更小的部分，再将小规模的问题解决后合并</p>
+<p>于是可以用递归重新实现二分查找</p>
+<pre><code class='language-python' lang='python'>def binarySearch(alist, item):
+    if len(alist) == 0:
+        return False
+    else:
+        midpoint = len(alist) // 2
+        if alist[midpoint] == item:
+            return True
+        else:
+            if item &lt; alist[midpoint]:
+                return binarySearch(alist[:midpoint], item)
+            else:
+                return binarySearch(alist[midpoint + 1:], item)
+
+
+testlist = [0, 1, 2, 8, 13, 17, 19, 32, 42]
+print(binarySearch(testlist, 3))
+print(binarySearch(testlist, 13))
+</code></pre>
+<p>简单的计算可知：二分查找的复杂度是O(log n)</p>
+<p>但是二分查找的前提：有序列表。对于无序表，需要排序，对于一般的无序表最好的排序算法的平均复杂度是O(nlog n)。</p>
+<p><strong>如果一次排序后可以进行多次查找，那么排序的开销就可以摊薄</strong></p>
+<p><strong>但如果数据集经常变动，查找次数相对较少，那么还是直接用无序表加上顺序查找来得经济</strong></p>
+<h3 id='散列hashing'>散列Hashing</h3>
+<p>如果数据项之间是<strong>按照大小排好序</strong>的话，就可以利用<strong>二分查找来降低算法复杂度</strong></p>
+<p>现在我们进一步构造一个新的数据结构，能够使得查找算法的复杂度降到$\mathrm{O}(1)$，这种概念称为<strong>散列Hashing</strong></p>
+<p>散列表（hash table，又称哈希表）是一种数据集，其中数据项的存储方式尤其有利于快速的查找定位</p>
+<p>散列表中每一个存储位置，称为槽（slot），可以用于保存数据项，每个槽有一个唯一的名称。</p>
+<p><strong>实现从数据项到存储槽名称的转换的，称为散列函数（hash function）</strong></p>
+<p>下面示例中，散列函数接受数据项作为参数，返回整数值0～10，表示数据项存储的槽号（名称）</p>
+<hr />
+<p>为了将数据项保存到散列表中，我们设计第一个散列函数：</p>
+<p>数据项：54，26，93，17，77，31</p>
+<p><strong>一种常用的散列方法是“求余数”，将数据项除以散列表的大小，得到的余数作为槽号</strong></p>
+<p>实际上“求余数”方法会以不同形式出现在所有散列函数里</p>
+<p>因为散列函数返回的槽号必须在散列表大小范围之内，所以一般会对散列表大小求余</p>
+<p>本例中，我们的散列函数是最简单的求余 $\mathrm{h}(\mathrm{item})=\mathrm{item}\%11$，按照散列函数即可将六个数据项入驻到散列表中</p>
+<p>槽被数据项占据的比例称为散列表的<strong>负载因子</strong>，此例中负载因子为$6/11$</p>
+<p>数据项都保存在散列表之后，查找就十分简单，对要查找的数据项使用同一个散列函数，对查找项进行计算，测试下返回的槽号所对应的槽中是否有数据项即可（这就实现了$\mathrm{O}(1)$的查找）</p>
+<hr />
+<p>当前这个方案的问题在于，若再加入44，$\mathrm{h}(44)=\mathrm{h}(77)=0$，两个数据项被分配到同一个0#槽中，这种情况被称为“冲突Collision”，后面会讨论它的解决方案。</p>
+<h4 id='完美散列函数'>完美散列函数</h4>
+<p>给定一组数据，如果一个散列函数能把每个数据项映射到不同的槽中，那么这个散列函数就可以称为<strong>完美散列函数</strong></p>
+<p>对于固定的一组数据，总是能想办法设计出完美散列函数</p>
+<p>但是<strong>如果数据项经常的变动，很难有一个系统性的方法来设计对应的完美散列函数（来完美的避免冲突）</strong></p>
+<p>当然，冲突也不是一种致命性的错误，后面也有办法来处理</p>
+<p>实现完美散列函数的一种方法是扩大散列表，大到所有可能出现的数据项都能占据不同的槽（但空间可能过大）</p>
+<p>好的散列表需要具备特性：<strong>冲突最少（近似完美），计算难度低（额外开销小），充分分散数据项（节约空间）</strong></p>
+<p>由于完美散列函数能够对任何不同的数据生成不同的散列值，如果把散列值当作数据的“指纹”或者“摘要”，这种特性广泛地应用在数据的一致性校验上。（完美散列函数：由任意长度的数据生成长度固定的“指纹”，还要求唯一性。这在数学上是无法做到的，但设计巧妙的“准完美“散列函数却能在实用范围内做到这一点。）</p>
+<p><strong>作为一致性校验的数据“指纹”函数需要具备如下的特性：</strong></p>
+<p><strong>压缩性</strong>：任意长度的数据，得到的“指纹”长度是固定的。</p>
+<p><strong>易计算性</strong>：从原数据计算“指纹”非常容易</p>
+<p><strong>抗修改性</strong>：对原数据的微小变动，都会引起“指纹”的大改变</p>
+<p><strong>抗冲突性</strong>：已知原数据和“指纹”，要找到相同指纹的数据（伪造）是非常困难的</p>
+<p>最著名的近似完美散列函数是MD5和SHA系列函数</p>
+<p><strong>MD5（Message Digest）</strong>将任何长度的数据变换为固定长为128位（16字节）的“摘要”</p>
+<p><strong>SHA（Secure Hash Algorithm）</strong>是另一组散列函数</p>
+<hr />
+<p>SHA-0/SHA-1输出散列值160位（20字节）</p>
+<p>SHA-256/SHA-224分别输出256位、224位</p>
+<p>SHA-512/SHA-384分别输出512位、384位</p>
+<hr />
+<p>虽然近年来发现MD5/SHA-0/SHA-1三种散列函数能够以极特殊的情况构造个别散列冲突，但在实用中从未有实际的威胁。</p>
+<p>Python中自带散列函数库hashlab：包含md5/sha1/sha224/sha256/sha384/sha512六种散列函数</p>
+<pre><code class='language-python' lang='python'>&gt;&gt;&gt; import hashlib
+&gt;&gt;&gt; hashlib.md5(&quot;hello world!&quot;.encode(&#39;utf8&#39;)).hexdigest()
+&#39;fc3ff98e8c6a0d3087d515c0473f8677&#39;
+&gt;&gt;&gt; hashlib.sha1(&quot;hello world!&quot;.encode(&#39;utf8&#39;)).hexdigest()
+&#39;430ce34d020724ed75a196dfc2ad67c77772d169&#39;
+</code></pre>
+<p>除了对单个字符串进行散列计算之外，还可以用update方法来对任意长的数据分部分来计算，这样不管多大的数据都不会有内存不足的问题。</p>
+<pre><code class='language-python' lang='python'>&gt;&gt;&gt; import hashlib
+&gt;&gt;&gt; m = hashlib.md5()
+&gt;&gt;&gt; m.update(&quot;hello world!&quot;.encode(&#39;utf8&#39;))
+&gt;&gt;&gt; m.update(&quot;this is part #2&quot;.encode(&#39;utf8&#39;))
+&gt;&gt;&gt; m.update(&quot;this is part #3&quot;.encode(&#39;utf8&#39;))
+&gt;&gt;&gt; m.hexdigest()
+&#39;a12edc8332947a3e02e5668c6484b93a&#39;
+</code></pre>
+<p><strong>完美散列函数用于数据一致性校验</strong>：</p>
+<p>为每个文件计算其散列值，仅对比其散列值即可得知是否文件内容相同</p>
+<p>用于网络上文件下载完整性校验，用于文件分享系统（网盘中相同的文件可以无需存储多次）</p>
+<p>加密形式保存密码：仅保存密码的散列值，用户输入密码后。计算散列值并比对，无需保存密码的明文即可判断用户是否输入了正确的密码。</p>
+<p>防止文件篡改：原理同数据文件一致性判断（当然还有更多密码学机制来保护数据文件）</p>
+<p>彩票投注应用：开奖后彩民通过开奖前公布的散列值和开奖后公布的结果对比来检验机构是否作弊</p>
+<h4 id='区块链技术'>区块链技术</h4>
+<p><strong>区块链是一种分布式的数据库：</strong></p>
+<p>通过网络连接的节点，每个节点都保存着整个数据库所有数据，任何地点存入的数据都会完成同步</p>
+<p>区块链最本质的特征是<strong>去中心化</strong>：不存在任何控制中心，所有节点都是平等的，无法被控制</p>
+<p><strong>但如何做到不需要相互信任和权威，即可防止篡改和破坏？</strong></p>
+<h5 id='区块链的数据结构'>区块链的数据结构</h5>
+<p>区块链由一个个区块（block）组成，区块分为头（head）和体（body）</p>
+<p><strong>区块头</strong>记录了一些元数据和连接到前一个区块的信息（生成时间、前一个区块head+body的散列值）</p>
+<p><strong>区块体</strong>记录了实际数据</p>
+<p>由于散列值具有抗修改性，任何对某个区块数据的改动必然引起散列值的变化：为了不导致这个区块脱离链条，就需要修改所有后续的区块，由于有“工作量证明”的机制，这种大规模修改是不可能实现的，除非掌握了全网51%以上的计算力。</p>
+<h5 id='工作量证明proof-of-workpow）'><strong>工作量证明（Proof of work，POW）</strong></h5>
+<p>由于区块链是大规模的分布式数据库，同步较慢，新区块的添加速度需要得到控制：目前最大规模区块链BItcoin采用的速度是平均每10分钟生成一个区块。于是大家不惜付出海量的计算，去抢着算出一个区块的<strong>有效</strong>散列值。最先算出的那位“矿工”才有资格把区块挂到区块链中。</p>
+<p><strong>提问：散列不是非常容易计算吗？为什么要付出海量计算？为什么要抢先？</strong></p>
+<p>因为很难算出，所以<strong>控制</strong>了新区块生成的<strong>速度</strong>，便于在整个分布式网络中进行同步</p>
+<p>每个区块设置一个难度系数Difficulty，用常数targetmax除以它，得到一个target，难度系数越高，target就越小</p>
+<p>矿工的工作是找到一个数值Nonce，把它和整个区块数据一起计算散列，这个散列值必须小于target，才是有效的散列值</p>
+<p>由于散列值无法回推原值，这个Nonce的寻找只能靠暴力枚举，计算工作量+运气是唯一的方法</p>
+<h5 id='bitcoin区块查询网站'><strong>Bitcoin区块查询网站</strong></h5>
+<p><a href='https://blockexplorer.com/' target='_blank' class='url'>https://blockexplorer.com/</a></p>
+<h5 id='为什么矿工抢着生成区块'><strong>为什么矿工抢着生成区块？</strong></h5>
+<p>因为有利益：在加密货币Bitcoin中，区块内包含的数据是“交易记录”，也就是“账本”，这对货币体系至关重要</p>
+<p>Bitcoin的每个区块中包含一定数量的比特币作为“记账奖励”，这样就鼓励了更多人加入到抢先记账的行列</p>
+<p>由于硬件摩尔定律的存在，计算力将持续递增，为了维持每10分钟生成一个区块的速度，难度系数Dificulty也将持续递增</p>
+<p>另外，为了保持货币总量不会无限增加，每四年奖励的比特币减半（2008年是50个，2019年是12.5个）</p>
+<h4 id='散列函数设计折叠法'>散列函数设计：折叠法</h4>
+<p>折叠法设计散列函数的基本步骤是：<strong>将数据项按照位数分为若干段，再将几段数据相加，最后对散列表大小求余，得到散列值</strong></p>
+<hr />
+<p>例如，对电话号码62767255</p>
+<p>可以两位两位分为4段（62、76、71、55）相加为265</p>
+<p>如果散列表包括11个槽，那么就是$265\%11=1$，所以$\mathrm{h}(62767255)=1$</p>
+<p>有时折叠法还会包括一个<strong>隔数反转</strong>的步骤</p>
+<p>比如（62、76、72、55）隔数反转为（62、67、72、55）相加为256</p>
+<p>对11求余就是$256\%11=3$，所以$\mathrm{h}’(62767255)=3$</p>
+<hr />
+<p>虽然隔数反转从理论上看来毫无必要，但这个步骤确实为折叠法得到散列函数提供了一种<strong>微调</strong>手段，以便更好符合散列特性</p>
+<h4 id='散列函数设计平方取中法'>散列函数设计：平方取中法</h4>
+<p>首先将数据项做平方运算，然后取平方数中间的两位，再对散列表的大小求余</p>
+<hr />
+<p>例如对44进行散列</p>
+<p>首先44*44=1936，然后取中间的93，对散列表大小11求余，得到$93\%11=5$</p>
+<hr />
+<h4 id='散列函数对比折叠法与平方取中法'>散列函数对比：折叠法与平方取中法</h4>
+<p>对于数据集：54、26、93、17、77、31</p>
+<p>简单演算知两个都是完美散列函数，分散度都很好，平方取中法计算量稍大</p>
+<h4 id='散列函数设计非数项'>散列函数设计：非数项</h4>
+<p>我们可以对非数字的数据项进行散列，把字符串中每个字符看作ASCII码即可</p>
+<hr />
+<p>如cat，<code>ord(&#39;c&#39;)==99，ord(&#39;a&#39;)==96，ord(&#39;t&#39;)==116</code>，再对这些整数累加，对散列表大小（11）求余得到4</p>
+<pre><code class='language-python' lang='python'>def hash(astring, tablesize):
+    sum = 0
+    for pos in range(len(astring)):
+        sum = sum + ord(astring[pos])
+    return sum % tablesize
+</code></pre>
+<hr />
+<p>但是，这样的散列函数对<strong>所有的变位词</strong>都返回相同的散列值</p>
+<p>在需要处理变位词的体系中，可以将字符串所在的位置作为<strong>权重因子</strong>，乘以ord值</p>
+<h4 id='散列函数设计评价'>散列函数设计：评价</h4>
+<p>我们还可以设计出更多的散列函数方法，但要坚持的基本出发点是，散列函数不能成为存储和查找过程的计算负担</p>
+<p>如果散列函数设计太过复杂，去花费大量的计算资源计算槽号，可能还不如简单地进行顺序查找或者二分查找，这也就失去了散列本身的意义。</p>
+<h3 id='散列冲突解决方案'>散列冲突解决方案</h3>
+<p>如果两个数据项被散列映射到同一个槽，需要一个系统化的方法在散列表中保存第二个数据项，称为“解决冲突”</p>
+<p>如果散列函数是完美的，那就不会有散列冲突，但完美散列函数常常是不现实的</p>
+<h4 id='开放定址open-addressing'>开放定址open addressing</h4>
+<p>“<strong>开放定址open addressing</strong>”：为冲突的数据项<strong>再找一个</strong>开放的空槽来保存</p>
+<p>开放定址技术中的“<strong>线性探测linear probing</strong>”：从冲突的槽开始往后扫描，直到碰到一个空槽。如果到散列表尾部还未找到，则从首部接着扫描</p>
+<p>显然，如果用线性探测方法来解决冲特的话，则散列表的查找也遵循同样的规则：如果在散列位置没有找到查找项的话，就必须向后做顺序查找直到找到查找项，或者碰到空槽（查找失败）</p>
+<p>线性探测法的一个缺点是有<strong>聚集（clustering）</strong>的趋势：如果同一个槽冲突的数据项较多的话，这些数据项会在槽附近聚集起来，从而影响到其他数据项的插入（解决方案：将线性探测的逐个探测改为跳跃式探测）</p>
+<h4 id='再散列rehashing'>再散列<strong>rehashing</strong></h4>
+<p>重新寻找空巢的过程可以用一个更加通用的说法&quot;再散列&quot;来概括<code>newhashvalue=rehash(oldhashvalue)</code></p>
+<p>当正常的散列函数对应槽已被占据，则通过对槽编号进行rehashing计算插入位置（新槽编号）</p>
+<p>对于线性探测来说<code>rehash(pos)=(pos+1)%sizeoftable</code></p>
+<p>‘+3’的跳跃式探测则是<code>rehash(pos)=(pos+3)%sizeoftable</code></p>
+<p>跳跃式探测的通式是<code>rehash(pos)=(pos+skip)%sizeoftable</code></p>
+<p>对于rehashing函数的选择：最重要的是rehashing函数不能形成循环，如跳跃式探测的通式中skip的取值不能被散列表大小整除（于是我们常讲散列表的大小设置为素数）。</p>
+<p>还可以将线性探测变为“二次探测quadratic probing“，如不再固定skip的值，而是逐步增加skip的值，如1、3...</p>
+<h4 id='数据项链chaining'>数据项链Chaining</h4>
+<p>将容纳单个数据项的槽扩展为数据项集合（或者对数据项链表的引用）</p>
+<p>这样，散列表中的每个槽就可以容纳多个数据项，若有散列冲突发生，只需要将数据项添加到数据项集合中</p>
+<p>查找数据项时则需要查找同一个槽中的整个集合，当然，随着散列冲突的增加，对数据项的查找时间也会相应增加</p>
+<h3 id='映射抽象数据类型adt-map'>映射抽象数据类型ADT map</h3>
+<p>Python最有用的数据类型之一“字典”</p>
+<p>字典是一种可以保存<strong>key-data键值对</strong>的数据类型：其中关键码key可用于查询关联的数据值data</p>
+<p>这种键值关联的方法称为“映射Map”</p>
+<p>ADT Map的结构是键值关联的无序集合：关键码具有唯一性，通过关键码可以唯一确定一个数据值</p>
+<pre><code class='language-python' lang='python'>Map()        #建立一个空映射，返回一个空映射对象
+put(key,val) #将key- val关联对加入到映射中，如果key已存在，将val替换旧关联值
+get(key)     #给定key，返回关联的数据值，如不存在，则返回None
+del          #通过del map[key]语句删除key-val关联
+len()        #返回映射中key-val关联的数目
+in           #通过key in map的语句形式，返回key是否存在于关联之中，bool值
+</code></pre>
+<p>下面用HashTable类来实现ADT map，该类包含两个列表作为成员（slot：保存key，平行的data：保存数据项）</p>
+<p>在slot列表中查找到一个key的位置之后，在data列表对应相同位置的数据项即为关联数据</p>
+<pre><code class='language-python' lang='python'>class HashTable:
+    def __init__(self):
+        self.size = 11  # 散列表的大小应该考虑数据集的大小，且选择为素数以使冲突解决算法能有效工作
+        self.slots = [None] * self.size
+        self.data = [None] * self.size
+
+    def put(self, key, data):
+        hashvalue = self.hashfunction(key)
+        if self.slots[hashvalue] == None:  # key不存在，未冲突
+            self.slots[hashvalue] = key
+            self.data[hashvalue] = data
+        else:
+            if self.slots[hashvalue] == key:  # key已存在，替换为val
+                self.data[hashvalue] = data
+            else:  # 散列冲突，再散列
+                nextslot = self.rehash(hashvalue)
+                while self.slots[nextslot] != None and \
+                        self.slots[nextslot] != key:
+                    nextslot = self.rehash(nextslot)
+
+                if self.slots[nextslot] == None:
+                    self.slots[nextslot] = key
+                    self.data[nextslot] = data
+                else:
+                    self.data[nextslot] = data
+
+    def hashfunction(self, key):
+        return key % self.size
+
+    def rehash(self, oldhash):
+        return (oldhash + 1) % self.size
+
+    def get(self, key):
+        startslot = self.hashfunction(key)  # 标记散列值为查找起点
+        data = None
+        stop = False
+        found = False
+        position = startslot
+        # 找key，直到空槽或回到起点
+        while self.slots[position] != None and \
+                not found and not stop:
+            if self.slots[position] == key:
+                found = True
+                data = self.data[position]
+            else:  # 未找到key，再散列继续找
+                position = self.rehash(position)
+                if position == startslot:
+                    stop = True  # 回到起点，停
+        return data
+
+    # 通过特殊方法实现[]访问
+    def __getitem__(self, key):
+        return self.get(key)
+
+    def __setitem__(self, key, data):
+        self.put(key, data)
+
+
+H = HashTable()
+H[54] = &#39;cat&#39;
+H[26] = &#39;dog&#39;
+H[93] = &#39;lion&#39;
+H[17] = &#39;tiger&#39;
+H[77] = &#39;bird&#39;
+H[31] = &#39;cow&#39;
+H[44] = &#39;goat&#39;
+H[55] = &#39;pig&#39;
+H[20] = &#39;chicken&#39;
+print(H.slots)
+print(H.data)
+print(H[20])
+print(H[17])
+H[20] = &#39;duck&#39;
+print(H[20])
+print(H[99])
+
+#输出
+#[77, 44, 55, 20, 26, 93, 17, None, None, 31, 54]
+#[&#39;bird&#39;, &#39;goat&#39;, &#39;pig&#39;, &#39;chicken&#39;, &#39;dog&#39;, &#39;lion&#39;, &#39;tiger&#39;, None, None, &#39;cow&#39;, &#39;cat&#39;]
+#chicken
+#tiger
+#duck
+#None
+</code></pre>
+<h4 id='散列算法分析'>散列算法分析</h4>
+<p><strong>散列在最好的情况下，可以提供O(1)常数级的时间复杂度的查找性能</strong></p>
+<p>但是由于散列冲突的存在，查找比较次数就没有这么简单</p>
+<p>评估散列冲突的最重要信息是<strong>负载因子$\lambda$</strong>，一般来说：</p>
+<p>如果$\lambda$较小，散列冲突的几率就越小，数据项通常会保存在其所属的散列槽中</p>
+<p>如果$\lambda$较大，散列表填充较满，冲突会越来越多，冲突解决也越复杂，也就需要更多的比较来找到空槽，如果采用数据链的话，意味着每条链上的数据项增多</p>
+<p>如果采用线性探测的开放定址法来解决冲突（$\lambda\in(0,1)$）:</p>
+<p>成功查找，平均需要比对$\frac{1}{2}(1+\frac{1}{1-\lambda})$次</p>
+<p>不成功查找，平均需要比对$\frac{1}{2}\left(1+(\frac{1}{1-\lambda})^2\right)$次</p>
+<p>如果采用数据链来解决冲突($\lambda$可大于$1$)</p>
+<p>成功查找，平均需要比对$1+\lambda/2$次</p>
+<p>不成功查找，平均需要比对$\lambda$次</p>
+<h3 id='排序与查找小结'>排序与查找小结</h3>
+<h4 id='查找算法'>查找算法</h4>
+<p>在无序表或者有序表上的顺序查找，时间复杂度O(n)</p>
+<p>在有序表上进行二分查找，其最差复杂度为O(log n)</p>
+<p>散列表可以实现常数级时间的查找</p>
+<p>完美散列函数作为数据一致性的校验，应用很广</p>
+<p>区块链技术作为一种去中心化的分布式数据库，通过“工作量证明”机制来维持运行</p>
+<h4 id='排序算法-2'>排序算法</h4>
+<p>冒泡、选择、插入排序都是O(n^2)的算法</p>
+<p>谢尔排序对插入排序进行了改进，采用对递增子表排序的方法，其时间复杂度是在O(n)和O(n^2)之间的指数</p>
+<p>归并排序的时间复杂度是O(nlog n)，但是归并的过程中需要额外存储空间</p>
+<p>快速排序最好的时间复杂度是O(nlog n)，也不需要额外的存储空间，但如果分裂点偏离列表中心的话，最坏情况会退化到O(n^2)</p>
+<h2 id='树'>树</h2>
+<h3 id='树的简介'>树的简介</h3>
+<p><strong>树</strong>是一种<strong>非线性</strong>的数据结构</p>
+<p>数据结构的树分为三部分：根，枝，叶（但一般树的数据结构的图示把根放在上方，叶放在下方）</p>
+<p><strong>节点Node</strong>：每个节点具有名称，或“键值”，节点还可以保存额外数据项，数据项根据不同的应用而变。</p>
+<p><strong>边Edge</strong>：每条边恰好连接两个节点，表示节点之间具有关联，边具有出入方向。</p>
+<p>每个节点（除根节点）恰有一条来自另一节点的入边；每个节点可以有多条连接到其他节点的出边。</p>
+<p><strong>子节点Children</strong>：入边均来自于同一个节点的若干节点，称为这个节点的子节点。</p>
+<p><strong>父节点Parent</strong>：一个节点是其所有出边所连接的父节点。</p>
+<p><strong>兄弟节点Sibling</strong>：具有同一个父节点的节点之间称为兄弟节点。</p>
+<p><strong>子树Subtree</strong>：一个节点和其所有子孙节点，以及相关边的集合。</p>
+<p><strong>叶节点Leaf</strong>：没有子节点的节点称为叶节点。</p>
+<p><strong>层级Level</strong>：从根节点开始到达一个节点的路径所包含边的数量，称为这个节点的层级。</p>
+<p><strong>高度Height</strong>：树中所有节点的最大层级称为树的高度。</p>
+<h3 id='树的定义'>树的定义</h3>
+<h4 id='通常定义'>通常定义</h4>
+<p>树由若干<strong>节点</strong>，以及两两连接节点的<strong>边</strong>组成，并有如下性质：</p>
+<ol start='' >
+<li>其中一个节点设定为根。</li>
+<li>每个节点n（除根节点外）都恰连接<strong>一条</strong>来自节点p的边，p是n的父节点。</li>
+<li>每个节点从根开始的路径是唯一的</li>
+<li>如果每个节点最多有两个子节点，这样的书被称为“二叉树”</li>
+
+</ol>
+<h4 id='递归定义'>递归定义</h4>
+<p><strong>树是：</strong></p>
+<p>空集；或者由根节点及0或多个子树构成（其中子树也是树），每个子树的根到根节点具有边相连</p>
+<h3 id='树的链表实现'>树的链表实现</h3>
+<p>首先尝试用Python List来实现二叉树数据结构</p>
+<p>递归的嵌套列表实现二叉树，由具有三个元素的列表实现：（根节点的值，左子树，右子树）<code>[root,left,right]</code></p>
+<p>嵌套列表法的优点：子表的结构与树相同，是一种递归数据结构；很容易拓展到多叉树，只需要增加列表元素即可。</p>
+<p>同时，我们需要定义一系列函数来辅助操作嵌套列表。</p>
+<pre><code class='language-python' lang='python'>BinaryTree %创建仅有根节点的二叉树
+insertLeft/insertRight %将新节点插入树中作为其直接的左/右节点，原来若有左/右节点则替换为新建的左/右节点的左/右节点
+get/setRootVal %取得或返回根节点
+getLeft/RightChild %返回左右子树
+</code></pre>
+<pre><code class='language-python' lang='python'>def BinaryTree(r):
+    return [r,[],[]]
+
+def insertLeft(root,newBranch):
+    t.root.pop(1)
+    if len(t)&gt;1:
+        root.insert(1,[newBranch,t,[]])
+    else:
+        root.insert(1,[newBranch,[],[]])
+    return root
+
+def insertRight(root,newBranch):
+    t.root.pop(2)
+    if len(t)&gt;1:
+        root.insert(2,[newBranch,[],t])
+    else:
+        root.insert(2,[newBranch,[],[]])
+    return root
+
+def getRootVal(root):
+    return root[0]
+
+def setRootVal(root,newVal):
+    root[0]=newVal
+
+def getLeftChild(root):
+    return root[1]
+
+def getRightChild(root):
+    return root[2]
+</code></pre>
+<p>&nbsp;</p>
+</body>
+</html>
