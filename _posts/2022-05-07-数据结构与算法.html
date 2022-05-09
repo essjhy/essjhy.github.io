@@ -1,8 +1,9 @@
 ---
 title: 数算
-author: ZHY
+author: essjzhy
 layout: post
 ---
+
 <!doctype html>
 <html>
 
@@ -26,6 +27,11 @@ layout: post
             --title-bar-height: 20px;
         }
 
+        #logo h1 {
+            border-bottom: none;
+            font-size: 20px;
+        }
+
         .mac-os-11 {
             --title-bar-height: 28px;
         }
@@ -37,6 +43,8 @@ layout: post
             font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
             -webkit-font-smoothing: antialiased;
         }
+
+
 
         .typora-export-content {
             margin: 0px;
@@ -107,7 +115,7 @@ layout: post
             padding-right: 8px;
         }
 
-        .typora-export-content {
+        body.typora-export-content {
             padding-left: 30px;
             padding-right: 30px;
         }
@@ -123,7 +131,7 @@ layout: post
         }
 
         @media screen and (max-width: 500px) {
-            .typora-export-content {
+            body.typora-export-content {
                 padding-left: 0px;
                 padding-right: 0px;
             }
@@ -1919,7 +1927,7 @@ layout: post
                 margin: 0 0 0 0;
             }
 
-            .typora-export-content {
+            body.typora-export-content {
                 padding-left: 0;
                 padding-right: 0;
             }
@@ -1927,15 +1935,6 @@ layout: post
             #write {
                 padding: 0;
             }
-        }
-
-        #logo h1 {
-            border-bottom: none;
-            font-size:24px
-        }
-        
-        #logo h2{
-            font-size:20px
         }
     </style>
     <title>数据结构与算法</title>
@@ -12155,7 +12154,7 @@ layout: post
     </pre>
     <h4 id='后序遍历表达式求值'><span>后序遍历：表达式求值</span></h4>
     <pre class="md-fences md-end-block md-fences-with-lineno ty-contain-cm modeLoaded" spellcheck="false"
-        lang="python"><div class="CodeMirror cm-s-inner cm-s-null-scroll CodeMirror-wrap" lang="python"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 9px; left: 44px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 36px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-code" role="presentation" style=""><div class="CodeMirror-activeline" style="position: relative;"><div class="CodeMirror-activeline-background CodeMirror-linebackground"></div><div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: -36px; width: 36px;"></div><div class="CodeMirror-gutter-wrapper CodeMirror-activeline-gutter" style="left: -36px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt CodeMirror-linenumber-show" style="left: 0px; width: 27px;">1</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">def</span> <span class="cm-def">postordereval</span>(<span class="cm-variable">tree</span>):</span></pre>
+        lang="python"><div class="CodeMirror cm-s-inner cm-s-null-scroll CodeMirror-wrap" lang="python"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 9px; left: 44px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 36px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><div class="CodeMirror-linenumber CodeMirror-gutter-elt"><div>12</div></div></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-code" role="presentation" style=""><div class="CodeMirror-activeline" style="position: relative;"><div class="CodeMirror-activeline-background CodeMirror-linebackground"></div><div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: -36px; width: 36px;"></div><div class="CodeMirror-gutter-wrapper CodeMirror-activeline-gutter" style="left: -36px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt CodeMirror-linenumber-show" style="left: 0px; width: 27px;">1</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">def</span> <span class="cm-def">postordereval</span>(<span class="cm-variable">tree</span>):</span></pre>
     </div>
     <div style="position: relative;">
         <div class="CodeMirror-gutter-wrapper" style="left: -36px;">
@@ -12244,7 +12243,7 @@ layout: post
     <div
         style="position: absolute; height: 0px; width: 1px; border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: transparent; top: 264px;">
     </div>
-    <div class="CodeMirror-gutters" style="height: 264px;">
+    <div class="CodeMirror-gutters" style="height: 264px; left: 0px;">
         <div class="CodeMirror-gutter CodeMirror-linenumbers" style="width: 35px;"></div>
     </div>
     </div>
@@ -12252,89 +12251,72 @@ layout: post
     </pre>
     <h4 id='中序遍历生成全括号中缀表达式'><span>中序遍历：生成全括号中缀表达式</span></h4>
     <pre class="md-fences md-end-block md-fences-with-lineno ty-contain-cm modeLoaded" spellcheck="false"
-        lang="python"><div class="CodeMirror cm-s-inner cm-s-null-scroll CodeMirror-wrap" lang="python"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 9px; left: 44px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 36px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre><span>xxxxxxxxxx</span></pre>
-    <div class="CodeMirror-linenumber CodeMirror-gutter-elt">
-        <div>10</div>
+        lang="python"><div class="CodeMirror cm-s-inner cm-s-null-scroll CodeMirror-wrap" lang="python"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 9px; left: 44px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 36px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><div class="CodeMirror-linenumber CodeMirror-gutter-elt"><div>10</div></div></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-code" role="presentation" style=""><div class="CodeMirror-activeline" style="position: relative;"><div class="CodeMirror-activeline-background CodeMirror-linebackground"></div><div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: -36px; width: 36px;"></div><div class="CodeMirror-gutter-wrapper CodeMirror-activeline-gutter" style="left: -36px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt CodeMirror-linenumber-show" style="left: 0px; width: 27px;">1</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">def</span> <span class="cm-def">printexp</span>(<span class="cm-variable">tree</span>):</span></pre>
     </div>
+    <div style="position: relative;">
+        <div class="CodeMirror-gutter-wrapper" style="left: -36px;">
+            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 27px;">2</div>
+        </div>
+        <pre class=" CodeMirror-line "
+            role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-variable">sVal</span> = <span class="cm-string">''</span></span></pre>
     </div>
-    <div class="CodeMirror-measure"></div>
-    <div style="position: relative; z-index: 1;"></div>
-    <div class="CodeMirror-code" role="presentation" style="">
-        <div class="CodeMirror-activeline" style="position: relative;">
-            <div class="CodeMirror-activeline-background CodeMirror-linebackground"></div>
-            <div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: -36px; width: 36px;">
-            </div>
-            <div class="CodeMirror-gutter-wrapper CodeMirror-activeline-gutter" style="left: -36px;">
-                <div class="CodeMirror-linenumber CodeMirror-gutter-elt CodeMirror-linenumber-show"
-                    style="left: 0px; width: 27px;">1</div>
-            </div>
-            <pre class=" CodeMirror-line "
-                role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-keyword">def</span> <span class="cm-def">printexp</span>(<span class="cm-variable">tree</span>):</span></pre>
+    <div style="position: relative;">
+        <div class="CodeMirror-gutter-wrapper" style="left: -36px;">
+            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 27px;">3</div>
         </div>
-        <div style="position: relative;">
-            <div class="CodeMirror-gutter-wrapper" style="left: -36px;">
-                <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 27px;">2</div>
-            </div>
-            <pre class=" CodeMirror-line "
-                role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-variable">sVal</span> = <span class="cm-string">''</span></span></pre>
+        <pre class=" CodeMirror-line "
+            role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-keyword">if</span> <span class="cm-variable">tree</span>:</span></pre>
+    </div>
+    <div style="position: relative;">
+        <div class="CodeMirror-gutter-wrapper" style="left: -36px;">
+            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 27px;">4</div>
         </div>
-        <div style="position: relative;">
-            <div class="CodeMirror-gutter-wrapper" style="left: -36px;">
-                <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 27px;">3</div>
-            </div>
-            <pre class=" CodeMirror-line "
-                role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-keyword">if</span> <span class="cm-variable">tree</span>:</span></pre>
+        <pre class=" CodeMirror-line "
+            role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-keyword">if</span> <span class="cm-variable">tree</span>.<span class="cm-property">getRootVal</span> <span class="cm-keyword">not</span> <span class="cm-keyword">in</span> [<span class="cm-string">'+'</span>, <span class="cm-string">'-'</span>, <span class="cm-string">'*'</span>, <span class="cm-string">'/'</span>]:</span></pre>
+    </div>
+    <div style="position: relative;">
+        <div class="CodeMirror-gutter-wrapper" style="left: -36px;">
+            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 27px;">5</div>
         </div>
-        <div style="position: relative;">
-            <div class="CodeMirror-gutter-wrapper" style="left: -36px;">
-                <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 27px;">4</div>
-            </div>
-            <pre class=" CodeMirror-line "
-                role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-keyword">if</span> <span class="cm-variable">tree</span>.<span class="cm-property">getRootVal</span> <span class="cm-keyword">not</span> <span class="cm-keyword">in</span> [<span class="cm-string">'+'</span>, <span class="cm-string">'-'</span>, <span class="cm-string">'*'</span>, <span class="cm-string">'/'</span>]:</span></pre>
+        <pre class=" CodeMirror-line "
+            role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-variable">sVal</span> = <span class="cm-string">'('</span> <span class="cm-operator">+</span> <span class="cm-variable">printexp</span>(<span class="cm-variable">tree</span>.<span class="cm-property">getLeftChild</span>())</span></pre>
+    </div>
+    <div style="position: relative;">
+        <div class="CodeMirror-gutter-wrapper" style="left: -36px;">
+            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 27px;">6</div>
         </div>
-        <div style="position: relative;">
-            <div class="CodeMirror-gutter-wrapper" style="left: -36px;">
-                <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 27px;">5</div>
-            </div>
-            <pre class=" CodeMirror-line "
-                role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-variable">sVal</span> = <span class="cm-string">'('</span> <span class="cm-operator">+</span> <span class="cm-variable">printexp</span>(<span class="cm-variable">tree</span>.<span class="cm-property">getLeftChild</span>())</span></pre>
+        <pre class=" CodeMirror-line "
+            role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-variable">sVal</span> = <span class="cm-variable">sVal</span> <span class="cm-operator">+</span> <span class="cm-builtin">str</span>(<span class="cm-variable">tree</span>.<span class="cm-property">getRootVal</span>())</span></pre>
+    </div>
+    <div style="position: relative;">
+        <div class="CodeMirror-gutter-wrapper" style="left: -36px;">
+            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 27px;">7</div>
         </div>
-        <div style="position: relative;">
-            <div class="CodeMirror-gutter-wrapper" style="left: -36px;">
-                <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 27px;">6</div>
-            </div>
-            <pre class=" CodeMirror-line "
-                role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-variable">sVal</span> = <span class="cm-variable">sVal</span> <span class="cm-operator">+</span> <span class="cm-builtin">str</span>(<span class="cm-variable">tree</span>.<span class="cm-property">getRootVal</span>())</span></pre>
+        <pre class=" CodeMirror-line "
+            role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-variable">sVal</span> = <span class="cm-variable">sVal</span> <span class="cm-operator">+</span> <span class="cm-variable">printexp</span>(<span class="cm-variable">tree</span>.<span class="cm-property">getRightChild</span>()) <span class="cm-operator">+</span> <span class="cm-string">')'</span></span></pre>
+    </div>
+    <div style="position: relative;">
+        <div class="CodeMirror-gutter-wrapper" style="left: -36px;">
+            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 27px;">8</div>
         </div>
-        <div style="position: relative;">
-            <div class="CodeMirror-gutter-wrapper" style="left: -36px;">
-                <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 27px;">7</div>
-            </div>
-            <pre class=" CodeMirror-line "
-                role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-variable">sVal</span> = <span class="cm-variable">sVal</span> <span class="cm-operator">+</span> <span class="cm-variable">printexp</span>(<span class="cm-variable">tree</span>.<span class="cm-property">getRightChild</span>()) <span class="cm-operator">+</span> <span class="cm-string">')'</span></span></pre>
+        <pre class=" CodeMirror-line "
+            role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-keyword">else</span>:</span></pre>
+    </div>
+    <div style="position: relative;">
+        <div class="CodeMirror-gutter-wrapper" style="left: -36px;">
+            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 27px;">9</div>
         </div>
-        <div style="position: relative;">
-            <div class="CodeMirror-gutter-wrapper" style="left: -36px;">
-                <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 27px;">8</div>
-            </div>
-            <pre class=" CodeMirror-line "
-                role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-keyword">else</span>:</span></pre>
+        <pre class=" CodeMirror-line "
+            role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-variable">sVal</span> = <span class="cm-variable">sVal</span> <span class="cm-operator">+</span> <span class="cm-builtin">str</span>(<span class="cm-variable">tree</span>.<span class="cm-property">getRootVal</span>())</span></pre>
+    </div>
+    <div style="position: relative;">
+        <div class="CodeMirror-gutter-wrapper" style="left: -36px;">
+            <div class="CodeMirror-linenumber CodeMirror-gutter-elt CodeMirror-linenumber-show"
+                style="left: 0px; width: 27px;">10</div>
         </div>
-        <div style="position: relative;">
-            <div class="CodeMirror-gutter-wrapper" style="left: -36px;">
-                <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 27px;">9</div>
-            </div>
-            <pre class=" CodeMirror-line "
-                role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span class="cm-variable">sVal</span> = <span class="cm-variable">sVal</span> <span class="cm-operator">+</span> <span class="cm-builtin">str</span>(<span class="cm-variable">tree</span>.<span class="cm-property">getRootVal</span>())</span></pre>
-        </div>
-        <div style="position: relative;">
-            <div class="CodeMirror-gutter-wrapper" style="left: -36px;">
-                <div class="CodeMirror-linenumber CodeMirror-gutter-elt CodeMirror-linenumber-show"
-                    style="left: 0px; width: 27px;">10</div>
-            </div>
-            <pre class=" CodeMirror-line "
-                role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-keyword">return</span> <span class="cm-variable">sVal</span></span></pre>
-        </div>
+        <pre class=" CodeMirror-line "
+            role="presentation"><span role="presentation" style="padding-right: 0.1px;"> &nbsp; &nbsp;<span class="cm-keyword">return</span> <span class="cm-variable">sVal</span></span></pre>
+    </div>
     </div>
     </div>
     </div>
@@ -12343,7 +12325,7 @@ layout: post
     <div
         style="position: absolute; height: 0px; width: 1px; border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: transparent; top: 220px;">
     </div>
-    <div class="CodeMirror-gutters" style="height: 220px;">
+    <div class="CodeMirror-gutters" style="height: 220px; left: 0px;">
         <div class="CodeMirror-gutter CodeMirror-linenumbers" style="width: 35px;"></div>
     </div>
     </div>
@@ -12358,68 +12340,51 @@ layout: post
     <p><span>最小Key排在对首的称为最小堆min Heap，最大key排在对首的称为最大堆max Heap</span></p>
     <h4 id='adt-binaryheap'><span>ADT BinaryHeap</span></h4>
     <pre class="md-fences md-end-block md-fences-with-lineno ty-contain-cm modeLoaded" spellcheck="false"
-        lang="python"><div class="CodeMirror cm-s-inner cm-s-null-scroll CodeMirror-wrap" lang="python"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 9px; left: 35px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 27px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre><span>xxxxxxxxxx</span></pre>
-    <div class="CodeMirror-linenumber CodeMirror-gutter-elt">
-        <div>7</div>
+        lang="python"><div class="CodeMirror cm-s-inner cm-s-null-scroll CodeMirror-wrap" lang="python"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 9px; left: 35px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; outline: none;"></textarea></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 27px; margin-bottom: 0px; border-right-width: 0px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><div class="CodeMirror-linenumber CodeMirror-gutter-elt"><div>7</div></div></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-code" role="presentation" style=""><div class="CodeMirror-activeline" style="position: relative;"><div class="CodeMirror-activeline-background CodeMirror-linebackground"></div><div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: -27px; width: 27px;"></div><div class="CodeMirror-gutter-wrapper CodeMirror-activeline-gutter" style="left: -27px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt CodeMirror-linenumber-show" style="left: 0px; width: 18px;">1</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">BinaryHeap</span>() <span class="cm-comment">#创建一个空二叉堆表</span></span></pre>
     </div>
+    <div style="position: relative;">
+        <div class="CodeMirror-gutter-wrapper" style="left: -27px;">
+            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 18px;">2</div>
+        </div>
+        <pre class=" CodeMirror-line "
+            role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">insert</span>(<span class="cm-variable">k</span>) &nbsp; &nbsp;<span class="cm-comment">#将新key加入堆中</span></span></pre>
     </div>
-    <div class="CodeMirror-measure"></div>
-    <div style="position: relative; z-index: 1;"></div>
-    <div class="CodeMirror-code" role="presentation" style="">
-        <div class="CodeMirror-activeline" style="position: relative;">
-            <div class="CodeMirror-activeline-background CodeMirror-linebackground"></div>
-            <div class="CodeMirror-gutter-background CodeMirror-activeline-gutter" style="left: -27px; width: 27px;">
-            </div>
-            <div class="CodeMirror-gutter-wrapper CodeMirror-activeline-gutter" style="left: -27px;">
-                <div class="CodeMirror-linenumber CodeMirror-gutter-elt CodeMirror-linenumber-show"
-                    style="left: 0px; width: 18px;">1</div>
-            </div>
-            <pre class=" CodeMirror-line "
-                role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">BinaryHeap</span>() <span class="cm-comment">#创建一个空二叉堆表</span></span></pre>
+    <div style="position: relative;">
+        <div class="CodeMirror-gutter-wrapper" style="left: -27px;">
+            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 18px;">3</div>
         </div>
-        <div style="position: relative;">
-            <div class="CodeMirror-gutter-wrapper" style="left: -27px;">
-                <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 18px;">2</div>
-            </div>
-            <pre class=" CodeMirror-line "
-                role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">insert</span>(<span class="cm-variable">k</span>) &nbsp; &nbsp;<span class="cm-comment">#将新key加入堆中</span></span></pre>
+        <pre class=" CodeMirror-line "
+            role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">findMin</span>() &nbsp; &nbsp;<span class="cm-comment">#返回堆中的最小项，最小项仍保留在堆中</span></span></pre>
+    </div>
+    <div style="position: relative;">
+        <div class="CodeMirror-gutter-wrapper" style="left: -27px;">
+            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 18px;">4</div>
         </div>
-        <div style="position: relative;">
-            <div class="CodeMirror-gutter-wrapper" style="left: -27px;">
-                <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 18px;">3</div>
-            </div>
-            <pre class=" CodeMirror-line "
-                role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">findMin</span>() &nbsp; &nbsp;<span class="cm-comment">#返回堆中的最小项，最小项仍保留在堆中</span></span></pre>
+        <pre class=" CodeMirror-line "
+            role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">delMin</span>() &nbsp; &nbsp; <span class="cm-comment">#返回堆中的最小项，同时从堆中删除</span></span></pre>
+    </div>
+    <div style="position: relative;">
+        <div class="CodeMirror-gutter-wrapper" style="left: -27px;">
+            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 18px;">5</div>
         </div>
-        <div style="position: relative;">
-            <div class="CodeMirror-gutter-wrapper" style="left: -27px;">
-                <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 18px;">4</div>
-            </div>
-            <pre class=" CodeMirror-line "
-                role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">delMin</span>() &nbsp; &nbsp; <span class="cm-comment">#返回堆中的最小项，同时从堆中删除</span></span></pre>
+        <pre class=" CodeMirror-line "
+            role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">isEmpty</span>() &nbsp; &nbsp;<span class="cm-comment">#返回堆是否为空</span></span></pre>
+    </div>
+    <div style="position: relative;">
+        <div class="CodeMirror-gutter-wrapper" style="left: -27px;">
+            <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 18px;">6</div>
         </div>
-        <div style="position: relative;">
-            <div class="CodeMirror-gutter-wrapper" style="left: -27px;">
-                <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 18px;">5</div>
-            </div>
-            <pre class=" CodeMirror-line "
-                role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">isEmpty</span>() &nbsp; &nbsp;<span class="cm-comment">#返回堆是否为空</span></span></pre>
+        <pre class=" CodeMirror-line "
+            role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">size</span>() &nbsp; &nbsp; &nbsp; <span class="cm-comment">#返回堆中key的个数</span></span></pre>
+    </div>
+    <div style="position: relative;">
+        <div class="CodeMirror-gutter-wrapper" style="left: -27px;">
+            <div class="CodeMirror-linenumber CodeMirror-gutter-elt CodeMirror-linenumber-show"
+                style="left: 0px; width: 18px;">7</div>
         </div>
-        <div style="position: relative;">
-            <div class="CodeMirror-gutter-wrapper" style="left: -27px;">
-                <div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 18px;">6</div>
-            </div>
-            <pre class=" CodeMirror-line "
-                role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">size</span>() &nbsp; &nbsp; &nbsp; <span class="cm-comment">#返回堆中key的个数</span></span></pre>
-        </div>
-        <div style="position: relative;">
-            <div class="CodeMirror-gutter-wrapper" style="left: -27px;">
-                <div class="CodeMirror-linenumber CodeMirror-gutter-elt CodeMirror-linenumber-show"
-                    style="left: 0px; width: 18px;">7</div>
-            </div>
-            <pre class=" CodeMirror-line "
-                role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">buildHeap</span>(<span class="cm-builtin">list</span>) <span class="cm-comment">#从一个key列表创建新堆</span></span></pre>
-        </div>
+        <pre class=" CodeMirror-line "
+            role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span class="cm-variable">buildHeap</span>(<span class="cm-builtin">list</span>) <span class="cm-comment">#从一个key列表创建新堆</span></span></pre>
+    </div>
     </div>
     </div>
     </div>
@@ -12428,7 +12393,7 @@ layout: post
     <div
         style="position: absolute; height: 0px; width: 1px; border-bottom-width: 0px; border-bottom-style: solid; border-bottom-color: transparent; top: 154px;">
     </div>
-    <div class="CodeMirror-gutters" style="height: 154px;">
+    <div class="CodeMirror-gutters" style="height: 154px; left: 0px;">
         <div class="CodeMirror-gutter CodeMirror-linenumbers" style="width: 26px;"></div>
     </div>
     </div>
