@@ -3,6 +3,7 @@ title: 数算
 author: essjzhy
 layout: post
 ---
+
 <!doctype html>
 <html>
 
@@ -4055,7 +4056,8 @@ layout: post
     <p><span>所以无序表必须要有对第一个节点的引用（第一个节点为none表示为空表，无序表的head始终指向链表中的第一个节点）</span></p>
     <p><span>注意，无序表对象本身不包含数据项，数据项存在节点中</span></p>
     <p><strong><span>add算法实现</span></strong><span>：由链表结构可知，添加数据项最快捷的位置是在表头（所有后续数据项都必须沿着next链逐项查找）</span><img
-            src="./img/截屏2022-03-17 上午8.27.00.png" referrerpolicy="no-referrer" alt="截屏2022-03-17 上午8.27.00"></p>
+            src="{{'assets/images/img/截屏2022-03-17 上午8.27.00.png' |relative url}}" referrerpolicy="no-referrer"
+            alt="截屏2022-03-17 上午8.27.00"></p>
     <p><strong><span>size算法实现</span></strong><span>：从链表头head开始遍历到表尾，同时用变量累加经过的数据个数</span></p>
     <p><strong><span>search算法实现</span></strong><span>：从链表头head开始遍历到表尾，同时判断当前节点的数据项是否为目标</span></p>
     <p><strong><span>remove算法实现</span></strong><span>：首先找到item，删除节点时，这时需要将前一个节点的next指向下一个节点，所以链表remove需要包含对于上一个节点的维护（需要区分删除第一个节点和其他节点）</span>
@@ -4985,8 +4987,8 @@ layout: post
     </p>
     <p><span>每次调用，压入栈的现场数据被称为栈帧</span></p>
     <p><span>当函数返回时，要从调用栈的顶端取得返回地址，回复现场，返回栈帧，按地址返回</span></p>
-    <center class="half"> <img src="./img/截屏2022-03-28 下午7.16.44.png" width="300"> <img
-            src="./img/截屏2022-03-28 下午7.16.04.png" width="300" height="250"> </center>
+    <center class="half"> <img src="{{'assets/images/img/截屏2022-03-28 下午7.16.44.png'|relative url}} width=" 300"> <img
+            src="{{'assets/images/img/截屏2022-03-28 下午7.16.04.png'|relative url}}" width="300" height="250"> </center>
     <p><strong><span>递归算法程序的时候会经常会碰到这样的错误：递归层数太多，系统调用栈有限</span></strong></p>
     <p><code>RecursionError : maximum recursion depth exceeded while...</code></p>
     <p><span>这时要检查程序中是否忘记设置</span><strong><span>基本结束条件</span></strong><span>，导致无限递归</span></p>
