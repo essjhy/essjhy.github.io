@@ -13,7 +13,7 @@ layout: post
   <link href='https://fonts.loli.net/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext'
     rel='stylesheet' type='text/css' />
   <style type='text/css'>
-    body.typora-export {
+    .typora-export-content {
       overflow-x: initial !important;
     }
 
@@ -30,7 +30,7 @@ layout: post
       --title-bar-height: 28px;
     }
 
-    .typora-export-content {
+    html {
       font-size: 14px;
       background-color: var(--bg-color);
       color: var(--text-color);
@@ -107,7 +107,7 @@ layout: post
       padding-right: 8px;
     }
 
-    body.typora-export {
+    .typora-export-content {
       padding-left: 30px;
       padding-right: 30px;
     }
@@ -123,7 +123,7 @@ layout: post
     }
 
     @media screen and (max-width: 500px) {
-      body.typora-export {
+      .typora-export-content {
         padding-left: 0px;
         padding-right: 0px;
       }
@@ -497,7 +497,7 @@ layout: post
 
     @media print {
 
-      body,
+      .typora-export-content,
       html {
         border: 1px solid transparent;
         height: 99%;
@@ -1504,7 +1504,7 @@ layout: post
       -webkit-font-smoothing: antialiased;
     }
 
-    body {
+    .typora-export-content {
       font-family: "Open Sans", "Clear Sans", "Helvetica Neue", Helvetica, Arial, 'Segoe UI Emoji', sans-serif;
       color: rgb(51, 51, 51);
       line-height: 1.6;
@@ -2076,7 +2076,7 @@ layout: post
         margin: 0 0 0 0;
       }
 
-      body.typora-export {
+      .typora-export-content {
         padding-left: 0;
         padding-right: 0;
       }
@@ -2087,13 +2087,73 @@ layout: post
     }
 
     #logo h1 {
-      border-bottom:none
+      position: relative;
+      color: #fff;
+      font-weight: 600;
+      font-size: 1em;
+      line-height: 1em;
+    }
+
+    #logo p {
+      position: relative;
+      display: block;
+      font-size: 0.6em;
+      color: rgba(255, 255, 255, 0.5);
+      line-height: 1.25em;
+      margin: 0.5em 0 0 0;
+    }
+
+    #header {
+      color: #fff;
+      text-align: right;
+    }
+
+    #nav ul li a span::before {
+      position: absolute;
+      left: 0;
+      color: #41484c;
+      text-align: center;
+      width: 1.25em;
+      line-height: 1.75em;
+    }
+
+    .icon::before {
+      font-family: "Font Awesome 5 Free";
+      font-weight: 900;
+      display: inline-block;
+      font-size: 1.25em;
+      text-decoration: none;
+      font-style: normal;
+      line-height: 1;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    #header .icons {
+      font-size: 0.8em;
+      text-align: center;
+    }
+
+    #header h2 {
+      font-size: 2em;
+      letter-spacing: -1px;
+      font-weight: 300;
+      color: #666;
+      line-height: 1.5em;
+    }
+
+    #main>article header p {
+      font-style: italic;
+    }
+
+    header>p {
+      margin: 1em 0 0 0;
     }
   </style>
   <title>数据结构与算法</title>
 </head>
 
-<body class='typora-export'>
+<.typora-export-content class='typora-export'>
   <div class='typora-export-content'>
     <div id='write' class=''>
       <h1 id='数据结构与算法'><span>数据结构与算法</span></h1>
@@ -10505,8 +10565,8 @@ layout: post
   <p><span>区块链最本质的特征是</span><strong><span>去中心化</span></strong><span>：不存在任何控制中心，所有节点都是平等的，无法被控制</span></p>
   <p><strong><span>但如何做到不需要相互信任和权威，即可防止篡改和破坏？</span></strong></p>
   <h5 id='区块链的数据结构'><span>区块链的数据结构</span></h5>
-  <p><span>区块链由一个个区块（block）组成，区块分为头（head）和体（body）</span></p>
-  <p><strong><span>区块头</span></strong><span>记录了一些元数据和连接到前一个区块的信息（生成时间、前一个区块head+body的散列值）</span></p>
+  <p><span>区块链由一个个区块（block）组成，区块分为头（head）和体（.typora-export-content）</span></p>
+  <p><strong><span>区块头</span></strong><span>记录了一些元数据和连接到前一个区块的信息（生成时间、前一个区块head+.typora-export-content的散列值）</span></p>
   <p><strong><span>区块体</span></strong><span>记录了实际数据</span></p>
   <p>
     <span>由于散列值具有抗修改性，任何对某个区块数据的改动必然引起散列值的变化：为了不导致这个区块脱离链条，就需要修改所有后续的区块，由于有“工作量证明”的机制，这种大规模修改是不可能实现的，除非掌握了全网51%以上的计算力。</span>
@@ -12175,6 +12235,6 @@ layout: post
   <p>&nbsp;</p>
   </div>
   </div>
-</body>
+</.typora-export-content>
 
 </html>
